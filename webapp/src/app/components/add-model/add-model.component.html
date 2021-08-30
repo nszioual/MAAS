@@ -1,0 +1,177 @@
+<nav class="breadcrumb is-medium" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="#">Models</a></li>
+    <li class="is-active">
+      <a href="#" aria-current="page">Add</a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-2">Create New Model</h1>
+
+<form [formGroup]="modelForm" (ngSubmit)="saveModel()">
+  <div class="box">
+    <div class="column is-half">
+      <div class="field form-group">
+        <label class="label">Name</label>
+        <div class="control">
+          <input
+            id="name"
+            formControlName="name"
+            class="input"
+            type="text"
+            required
+            placeholder="Name of the model"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.name.touched || submitted) &&
+            modelFormControl.name.errors?.required
+          "
+        >
+          <sup>*</sup>Name is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.name.touched || submitted) &&
+            modelFormControl.name.errors?.minlength
+          "
+        >
+          <sup>*</sup>Name must be at least 2 characters long
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.name.touched || submitted) &&
+            modelFormControl.name.errors?.maxlength
+          "
+        >
+          <sup>*</sup>Name has a maximum of 30 characters
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.name.touched || submitted) &&
+            modelFormControl.name.errors?.pattern
+          "
+        >
+          <sup>*</sup>No special characters are allowed
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Description</label>
+        <div class="control">
+          <textarea
+            id="description"
+            formControlName="description"
+            required
+            class="textarea"
+            placeholder="Description of the model"
+          ></textarea>
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.description.touched || submitted) &&
+            modelFormControl.description.errors?.required
+          "
+        >
+          <sup>*</sup>Description is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.description.touched || submitted) &&
+            modelFormControl.description.errors?.minlength
+          "
+        >
+          <sup>*</sup>Description must be at least 2 characters long
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.description.touched || submitted) &&
+            modelFormControl.description.errors?.maxlength
+          "
+        >
+          <sup>*</sup>Description has a maximum of 350 characters
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Path</label>
+        <div class="control">
+          <input
+            id="path"
+            formControlName="path"
+            class="input"
+            type="text"
+            required
+            placeholder="Path of the model"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.path.touched || submitted) &&
+            modelFormControl.path.errors?.required
+          "
+        >
+          <sup>*</sup>Path is required
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Language</label>
+        <div class="control">
+          <input disabled formControlName="type" class="input" type="text" />
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <div class="file has-name">
+          <label class="file-label">
+            <input
+              class="file-input"
+              id="file"
+              accept=".bpmn, .epml"
+              type="file"
+              (change)="setFile($event)"
+            />
+            <span class="file-cta">
+              <span class="file-icon">
+                <fa-icon [icon]="faUpload"></fa-icon>
+              </span>
+              <span class="file-label"> Upload </span>
+            </span>
+            <span class="file-name"> {{ selectedFileName }} </span>
+          </label>
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="submitted && modelFormControl.type.errors?.required"
+        >
+          <sup>*</sup>File is required
+        </div>
+      </div>
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-primary">Submit</button>
+        </div>
+        <div class="control">
+          <button type="button" routerLink=".." class="button is-link is-light">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

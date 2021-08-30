@@ -1,0 +1,112 @@
+<nav class="breadcrumb is-medium" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="#">Domains</a></li>
+    <li class="is-active">
+      <a href="#" aria-current="page">Update</a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-2">Update Domain</h1>
+
+<div class="box columns">
+  <div class="column is-half">
+    <form [formGroup]="currentDomainForm" (ngSubmit)="updateDomain()">
+      <div class="field form-group">
+        <label class="label">Name</label>
+        <div class="control">
+          <input
+            id="name"
+            formControlName="name"
+            required
+            class="input"
+            type="text"
+            placeholder="Name of the domain"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (domainFormControl.name.touched || submitted) &&
+            domainFormControl.name.errors?.required
+          "
+        >
+          <sup>*</sup>Name is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (domainFormControl.name.touched || submitted) &&
+            domainFormControl.name.errors?.minlength
+          "
+        >
+          <sup>*</sup>Name must be at least 2 characters long
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (domainFormControl.name.touched || submitted) &&
+            domainFormControl.name.errors?.maxlength
+          "
+        >
+          <sup>*</sup>Name has a maximum of 30 characters
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (domainFormControl.name.touched || submitted) &&
+            domainFormControl.name.errors?.pattern
+          "
+        >
+          <sup>*</sup>No special characters are allowed
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Tags</label>
+        <div class="control">
+          <textarea
+            id="tags"
+            formControlName="tags"
+            required
+            class="textarea"
+            placeholder="Tags of the domain"
+          ></textarea>
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (domainFormControl.tags.touched || submitted) &&
+            domainFormControl.tags.errors?.required
+          "
+        >
+          <sup>*</sup>Tags are required
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-link">Update</button>
+        </div>
+        <div class="control">
+          <button
+            type="button"
+            (click)="deleteDomain()"
+            class="button is-danger"
+          >
+            Delete
+          </button>
+        </div>
+        <div class="control">
+          <button type="button" routerLink="../.." class="button is-info is-light">
+            Return
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <p>{{ message }}</p>
+  </div>
+</div>

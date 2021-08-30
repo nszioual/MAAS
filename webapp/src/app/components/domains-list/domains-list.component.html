@@ -1,0 +1,93 @@
+<nav class="breadcrumb is-medium" aria-label="breadcrumbs">
+  <ul>
+    <li class="is-active">
+      <a href="#" aria-current="page">Domains</a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-2">Domains List</h1>
+
+<div class="field has-addons">
+  <button class="button is-primary" routerLink="/domains/add" type="button">
+    <span class="icon is-small">
+      <fa-icon [icon]="faPlus"></fa-icon>
+    </span>
+    <span>Add Domain</span>
+  </button>
+</div>
+
+<div class="field has-addons">
+  <div class="control is-expanded">
+    <input
+      class="input"
+      type="text"
+      placeholder="Domain name"
+      (keydown)="onKeydown($event)"
+      [formControl]="name"
+    />
+  </div>
+  <div class="control">
+    <button class="button is-info" type="button" (click)="searchName()">
+      Search
+    </button>
+  </div>
+</div>
+
+<div class="box">
+  <table class="table is-narrow is-striped is-fullwidth">
+    <thead>
+    <tr>
+      <th><abbr>Name</abbr></th>
+      <th><abbr>Number of Tags</abbr></th>
+      <th><abbr>Creation Date</abbr></th>
+      <th><abbr>Modification Date</abbr></th>
+      <th><abbr>Actions</abbr></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let domain of domains; let i = index">
+      <td>{{ domain.name }}</td>
+      <td>{{ getNumberOfTags(domain) }}</td>
+      <td>28-5-2021 01:50:57</td>
+      <td>28-5-2021 01:50:57</td>
+      <td>
+        <div class="field is-grouped">
+          <div class="control">
+            <button
+              class="button is-info"
+              routerLink="/domains/get/{{ domain.id }}"
+            >
+                <span class="icon is-small">
+                  <i class="fas fa-bold"></i>
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </span>
+              <span>Edit</span>
+            </button>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="field has-addons is-pulled-right">
+  <button class="button" (click)="previousPage()" type="button" [disabled]="currentPage == 0">
+    <span>Previous</span>
+  </button>
+
+  <button class="button" (click)="nextPage()" type="button"
+          [disabled]="currentPage == totalPages - 1|| totalElements <= 8">
+    <span>Next page</span>
+  </button>
+</div>
+
+<ul>
+  <li>
+    <h2 class="subtitle is-6">Page: {{currentPage + 1}} of {{totalPages}}</h2>
+  </li>
+  <li>
+    <h2 class="subtitle is-6">Total results: {{totalElements}}</h2>
+  </li>
+</ul>

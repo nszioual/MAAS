@@ -1,0 +1,11 @@
+version: '3'
+services:
+  server:
+    container_name: webapp
+    image: webapp
+    ports:
+      - "4200:4200"
+    tty: true
+    stdin_open: true
+    environment:
+      - MODE=dev

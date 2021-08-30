@@ -1,0 +1,474 @@
+<nav class="breadcrumb is-medium" aria-label="breadcrumbs">
+  <ul>
+    <li class="is-active">
+      <a href="#" aria-current="page">Filter</a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-2">Model Filtering</h1>
+
+<form [formGroup]="searchForm" [hidden]="submitted" (ngSubmit)="filterModels()">
+  <div class="box columns">
+    <div class="column is-three-fifths">
+      <label class="label title is-4">General</label>
+      <div class="field form-group">
+        <label class="subtitle is-6">Model Name</label>
+        <div class="control">
+          <input
+            formControlName="name"
+            required
+            class="input"
+            type="text"
+            placeholder="Search by keyword in model name"
+          />
+        </div>
+      </div>
+
+      <label class="label title is-4">Model Elements</label>
+
+      <div formGroupName="elements">
+        <div class="columns">
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">Number of Edges</label>
+              <div class="columns" formGroupName="edgeCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                    <!-- <div class="red" *ngIf="edgeCount.predicate.value.touched">
+                      <div *ngIf="value.errors?.pattern">
+                        value is invalid!
+                      </div>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">Number of Tasks</label>
+              <div class="columns" formGroupName="taskCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">AND Joins</label>
+              <div class="columns" formGroupName="andJoinCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">AND Splits</label>
+              <div class="columns" formGroupName="andSplitCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">OR Joins</label>
+              <div class="columns" formGroupName="orJoinCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">OR Splits</label>
+              <div class="columns" formGroupName="orSplitCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">XOR Joins</label>
+              <div class="columns" formGroupName="xorJoinCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">XOR Splits</label>
+              <div class="columns" formGroupName="xorSplitCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns">
+          <div class="column is-half">
+            <div class="field form-group">
+              <label class="subtitle is-6">Number of Events</label>
+              <div class="columns" formGroupName="eventCount">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button type="submit" class="button is-primary">Search</button>
+          </div>
+          <div class="control">
+            <button type="button" routerLink=".." class="button is-info is-light">
+              Return
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="column is-two-fifths">
+      <label class="label title is-4">&nbsp;</label>
+
+      <div class="field form-group">
+        <label class="subtitle is-6">Model Extension</label>
+        <div class="control">
+          <div class="select is-normal">
+            <select formControlName="format">
+              <option value="">Choose extension</option>
+              <option *ngFor="let format of formats" [ngValue]="format">{{format}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div formGroupName="repository">
+        <label class="label title is-4">Repository Filters</label>
+        <div class="columns">
+          <div class="column">
+            <div class="field form-group">
+              <label class="subtitle is-6">Repository Name</label>
+              <div class="control">
+                <input
+                  formControlName="repositoryName"
+                  required
+                  class="input"
+                  type="text"
+                  placeholder="Search by keyword in repository name"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <div class="field form-group">
+              <label class="subtitle is-6">Number of Stars</label>
+              <div class="columns" formGroupName="numberOfStars">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <div class="field form-group">
+              <label class="subtitle is-6">Number of Forks</label>
+              <div class="columns" formGroupName="numberOfForks">
+                <div class="column is-half">
+                  <div class="control">
+                    <div class="select">
+                      <select formControlName="predicate">
+                        <option value="">Choose predicate</option>
+                        <option *ngFor="let predicate of predicates" [ngValue]="predicate">{{predicate}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="control">
+                    <input
+                      formControlName="value"
+                      class="input"
+                      min="0"
+                      step="any"
+                      type="number"
+                      placeholder="amount"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<form [formGroup]="searchForm" [hidden]="!submitted" (ngSubmit)="download()">
+  <div class="columns is-multiline">
+    <div class="column">
+      <div class="box">
+        <div class="level">
+          <div class="column is-one-fifths level-left">
+            <article>
+              <p class="title">{{totalElements}}</p>
+              <p class="subtitle">Models found</p>
+            </article>
+            <div class="field form-group">
+              <div class="control">
+                <div class="select is-normal">
+                  <select formControlName="target">
+                    <option value="">Target format</option>
+                    <option *ngFor="let format of formats" [ngValue]="format">{{format}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="level-right">
+            <div class="field is-grouped">
+              <div class="control">
+                <button
+                  [disabled]="totalElements == 0"
+                  type="submit"
+                  class="button is-primary"
+                >
+                  Download
+                </button>
+              </div>
+              <div class="control">
+                <button type="button" routerLink=".." class="button is-link is-light">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

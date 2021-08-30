@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:epml xmlns:ns2="http://www.epml.de" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+    <coordinates xOrigin="leftToRight" yOrigin="topToBottom"/>
+    <definitions>
+        <definition defId="1" type="event">
+            <name></name>
+        </definition>
+        <definition defId="2" type="function">
+            <name>Determine Size</name>
+        </definition>
+        <definition defId="3" type="function">
+            <name>Normal post shipment</name>
+        </definition>
+        <definition defId="4" type="function">
+            <name>Special Shipping</name>
+        </definition>
+        <definition defId="5" type="function">
+            <name>Request Offer</name>
+        </definition>
+        <definition defId="6" type="function">
+            <name>Select Vendor</name>
+        </definition>
+        <definition defId="7" type="function">
+            <name>Create Package Label</name>
+        </definition>
+        <definition defId="8" type="function">
+            <name>Submit Offer</name>
+        </definition>
+        <definition defId="9" type="function">
+            <name>Package Goods</name>
+        </definition>
+        <definition defId="10" type="function">
+            <name>Purchase Insurance</name>
+        </definition>
+        <definition defId="11" type="role">
+            <name>Secretary</name>
+        </definition>
+        <definition defId="12" type="role">
+            <name>Vendor 1</name>
+        </definition>
+        <definition defId="13" type="role">
+            <name>Vendor 2</name>
+        </definition>
+        <definition defId="14" type="role">
+            <name>Vendor 3</name>
+        </definition>
+        <definition defId="15" type="role">
+            <name>Warehousemen</name>
+        </definition>
+        <definition defId="16" type="role">
+            <name>Logistics department</name>
+        </definition>
+        <definition defId="17" type="role">
+            <name>Dispatch of Goods</name>
+        </definition>
+        <definition defId="18" type="function">
+            <name></name>
+        </definition>
+    </definitions>
+    <attributeTypes>
+        <attributeType typeId="nodetype"/>
+        <attributeType typeId="roletype"/>
+    </attributeTypes>
+    <directory>
+        <epc epcId="1" name="Dispatch of Goods">
+            <event id="2" defRef="1">
+                <name></name>
+            </event>
+            <function id="3" defRef="2">
+                <name>Determine Size</name>
+            </function>
+            <xor id="4">
+                <name></name>
+            </xor>
+            <function id="5" defRef="3">
+                <name>Normal post shipment</name>
+            </function>
+            <function id="6" defRef="4">
+                <name>Special Shipping</name>
+            </function>
+            <function id="7" defRef="5">
+                <name>Request Offer</name>
+            </function>
+            <and id="8">
+                <name></name>
+            </and>
+            <and id="9">
+                <name></name>
+            </and>
+            <function id="10" defRef="6">
+                <name>Select Vendor</name>
+            </function>
+            <function id="11" defRef="7">
+                <name>Create Package Label</name>
+            </function>
+            <xor id="12">
+                <name></name>
+            </xor>
+            <event id="13" defRef="1">
+                <name></name>
+            </event>
+            <and id="14">
+                <name></name>
+            </and>
+            <and id="15">
+                <name></name>
+            </and>
+            <event id="16" defRef="1">
+                <name></name>
+            </event>
+            <function id="17" defRef="8">
+                <name>Submit Offer</name>
+            </function>
+            <function id="18" defRef="8">
+                <name>Submit Offer</name>
+            </function>
+            <function id="19" defRef="8">
+                <name>Submit Offer</name>
+            </function>
+            <function id="20" defRef="9">
+                <name>Package Goods</name>
+            </function>
+            <function id="21" defRef="10">
+                <name>Purchase Insurance</name>
+            </function>
+            <event id="22" defRef="1">
+                <name></name>
+            </event>
+            <arc id="23">
+                <flow source="3" target="4"/>
+            </arc>
+            <arc id="24">
+                <flow source="6" target="7"/>
+            </arc>
+            <arc id="25">
+                <flow source="4" target="5"/>
+            </arc>
+            <arc id="26">
+                <flow source="7" target="8"/>
+            </arc>
+            <arc id="27">
+                <flow source="5" target="11"/>
+            </arc>
+            <arc id="28">
+                <flow source="11" target="12"/>
+            </arc>
+            <arc id="29">
+                <flow source="12" target="21"/>
+            </arc>
+            <arc id="30">
+                <flow source="21" target="22"/>
+            </arc>
+            <arc id="31">
+                <flow source="8" target="20"/>
+            </arc>
+            <arc id="32">
+                <flow source="12" target="13"/>
+            </arc>
+            <arc id="33">
+                <flow source="8" target="14"/>
+            </arc>
+            <arc id="34">
+                <flow source="9" target="10"/>
+            </arc>
+            <arc id="35">
+                <flow source="20" target="15"/>
+            </arc>
+            <arc id="36">
+                <flow source="10" target="15"/>
+            </arc>
+            <arc id="37">
+                <flow source="15" target="16"/>
+            </arc>
+            <arc id="38">
+                <flow source="14" target="19"/>
+            </arc>
+            <arc id="39">
+                <flow source="14" target="18"/>
+            </arc>
+            <arc id="40">
+                <flow source="14" target="17"/>
+            </arc>
+            <arc id="41">
+                <flow source="19" target="9"/>
+            </arc>
+            <arc id="42">
+                <flow source="18" target="9"/>
+            </arc>
+            <arc id="43">
+                <flow source="17" target="9"/>
+            </arc>
+            <arc id="44">
+                <flow source="4" target="6"/>
+            </arc>
+            <arc id="45">
+                <flow source="2" target="3"/>
+            </arc>
+            <role id="46" defRef="11">
+                <name>Secretary</name>
+            </role>
+            <role id="47" defRef="12">
+                <name>Vendor 1</name>
+            </role>
+            <role id="48" defRef="13">
+                <name>Vendor 2</name>
+            </role>
+            <role id="49" defRef="14">
+                <name>Vendor 3</name>
+            </role>
+            <role id="50" defRef="15">
+                <name>Warehousemen</name>
+            </role>
+            <role id="51" defRef="16">
+                <name>Logistics department</name>
+            </role>
+            <role id="52" defRef="17">
+                <name>Dispatch of Goods</name>
+            </role>
+            <arc id="53">
+                <relation source="2" target="46" type="role"/>
+            </arc>
+            <arc id="54">
+                <relation source="3" target="46" type="role"/>
+            </arc>
+            <arc id="55">
+                <relation source="5" target="46" type="role"/>
+            </arc>
+            <arc id="56">
+                <relation source="6" target="46" type="role"/>
+            </arc>
+            <arc id="57">
+                <relation source="7" target="46" type="role"/>
+            </arc>
+            <arc id="58">
+                <relation source="10" target="46" type="role"/>
+            </arc>
+            <arc id="59">
+                <relation source="11" target="46" type="role"/>
+            </arc>
+            <arc id="60">
+                <relation source="13" target="46" type="role"/>
+            </arc>
+            <arc id="61">
+                <relation source="16" target="46" type="role"/>
+            </arc>
+            <arc id="62">
+                <relation source="17" target="47" type="role"/>
+            </arc>
+            <arc id="63">
+                <relation source="18" target="48" type="role"/>
+            </arc>
+            <arc id="64">
+                <relation source="19" target="49" type="role"/>
+            </arc>
+            <arc id="65">
+                <relation source="20" target="50" type="role"/>
+            </arc>
+            <arc id="66">
+                <relation source="21" target="51" type="role"/>
+            </arc>
+            <arc id="67">
+                <relation source="22" target="51" type="role"/>
+            </arc>
+        </epc>
+        <epc epcId="68" name="">
+            <function id="69" defRef="18">
+                <name></name>
+            </function>
+            <role id="70" defRef="11">
+                <name>Secretary</name>
+            </role>
+            <role id="71" defRef="12">
+                <name>Vendor 1</name>
+            </role>
+            <role id="72" defRef="13">
+                <name>Vendor 2</name>
+            </role>
+            <role id="73" defRef="14">
+                <name>Vendor 3</name>
+            </role>
+            <role id="74" defRef="15">
+                <name>Warehousemen</name>
+            </role>
+            <role id="75" defRef="16">
+                <name>Logistics department</name>
+            </role>
+            <role id="76" defRef="17">
+                <name>Dispatch of Goods</name>
+            </role>
+        </epc>
+    </directory>
+</ns2:epml>

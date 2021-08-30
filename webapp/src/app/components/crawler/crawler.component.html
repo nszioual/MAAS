@@ -1,0 +1,111 @@
+<nav class="breadcrumb is-medium" aria-label="breadcrumbs">
+  <ul>
+    <li class="is-active">
+      <a href="#" aria-current="page">Crawler</a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-2">GitHub Model Crawler</h1>
+
+<div class="columns is-multiline">
+  <div class="column">
+    <article class="box notification is-link">
+      <p class="title">{{totalLinksCount}}</p>
+      <p class="subtitle">links collected</p>
+    </article>
+  </div>
+  <div class="column">
+    <article class="box notification is-info">
+      <p class="title">{{collectedModels}}</p>
+      <p class="subtitle">models collected</p>
+    </article>
+  </div>
+  <div class="column">
+    <article class="box notification is-danger">
+      <p class="title">{{nonValidModels}}</p>
+      <p class="subtitle">models skipped</p>
+    </article>
+  </div>
+  <div class="column">
+    <div class="box notification" [ngClass]="status == 'idle' ? 'is-warning' : 'is-primary'">
+      <div class="title">{{status}}...</div>
+      <div class="subtitle">crawler status</div>
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="searchForm" (ngSubmit)="startCrawler()">
+  <div class="columns is-multiline">
+    <div class="column">
+      <div class="box">
+        <div class="level">
+          <div class="column is-one-fifth level-left">
+            <div class="field form-group">
+              <div class="control">
+                <div class="select">
+                  <select (change)="changeExtension($event)" formControlName="extension">
+                    <option value="">Choose model extension</option>
+                    <option *ngFor="let extension of extensions" [ngValue]="extension">{{extension}}</option>
+                  </select>
+                </div>
+              </div>
+              <!-- error block -->
+              <div class="invalid-feedback" *ngIf="submitted && extension.errors?.required">
+                <sup>*</sup>Model extension required
+              </div>
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="control">
+              <input
+                formControlName="userName"
+                class="input"
+                type="text"
+                placeholder="GitHub username"
+              />
+            </div>
+          </div>
+          <div class="column is-one-fifth">
+            <div class="control">
+              <input
+                formControlName="passWord"
+                class="input"
+                type="password"
+                placeholder="GitHub password"
+              />
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="field is-grouped">
+              <div class="control">
+                <button
+                  [disabled]="status == 'running'"
+                  type="submit"
+                  class="button is-primary"
+                >
+                  Start Crawler
+                </button>
+              </div>
+              <div class="control">
+                <button
+                  type="button"
+                  (click)="updateStatus()"
+                  class="button is-info"
+                >
+                  Status
+                </button>
+              </div>
+
+              <div class="control">
+                <button type="button" routerLink=".." class="button is-link is-light">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

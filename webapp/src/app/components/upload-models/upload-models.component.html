@@ -1,0 +1,190 @@
+<nav class="breadcrumb is-medium" aria-label="breadcrumbs">
+  <ul>
+    <li class="is-active">
+      <a href="#" aria-current="page">Upload</a>
+    </li>
+  </ul>
+</nav>
+
+<h1 class="title is-2">Upload Models</h1>
+
+<form [formGroup]="uploadForm" (ngSubmit)="saveModels()">
+  <div class="box">
+    <div class="column is-half">
+      <div class="field form-group">
+        <label class="label">Repository URL</label>
+        <div class="control">
+          <input
+            id="repoUrl"
+            formControlName="repoUrl"
+            class="input"
+            type="text"
+            required
+            placeholder="URL to the repository"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.repoUrl.touched || submitted) &&
+            uploadFormControl.repoUrl.errors?.required
+          "
+        >
+          <sup>*</sup>Repository URL is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.repoUrl.touched || submitted) &&
+            uploadFormControl.repoUrl.errors?.pattern
+          "
+        >
+          <sup>*</sup>Given URL is invalid
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Stars</label>
+        <div class="control">
+          <input
+            id="stars"
+            formControlName="stars"
+            required
+            class="input"
+            min="0"
+            step="any"
+            type="number"
+            placeholder="Number of stars"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.stars.touched || submitted) &&
+            uploadFormControl.stars.errors?.required
+          "
+        >
+          <sup>*</sup>Stars number is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.stars.touched || submitted) &&
+            uploadFormControl.stars.errors?.pattern
+          "
+        >
+          <sup>*</sup>Number format is invalid
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Forks</label>
+        <div class="control">
+          <input
+            id="forks"
+            formControlName="forks"
+            required
+            class="input"
+            min="0"
+            step="any"
+            type="number"
+            placeholder="Number of forks"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.forks.touched || submitted) &&
+            uploadFormControl.forks.errors?.required
+          "
+        >
+          <sup>*</sup>Forks number is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.forks.touched || submitted) &&
+            uploadFormControl.forks.errors?.pattern
+          "
+        >
+          <sup>*</sup>Number format is invalid
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Branches</label>
+        <div class="control">
+          <input
+            id="branches"
+            formControlName="branches"
+            required
+            class="input"
+            min="0"
+            step="any"
+            type="number"
+            placeholder="Number of branches"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.branches.touched || submitted) &&
+            uploadFormControl.branches.errors?.required
+          "
+        >
+          <sup>*</sup>Branch number is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (uploadFormControl.branches.touched || submitted) &&
+            uploadFormControl.branches.errors?.pattern
+          "
+        >
+          <sup>*</sup>Number format is invalid
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <div class="file has-name">
+          <label class="file-label">
+            <input
+              class="file-input"
+              id="file"
+              accept=".zip"
+              type="file"
+              (change)="setFile($event)"
+            />
+            <span class="file-cta">
+              <span class="file-icon">
+                <fa-icon [icon]="faUpload"></fa-icon>
+              </span>
+              <span class="file-label"> Upload </span>
+            </span>
+            <span class="file-name"> {{ selectedFileName }} </span>
+          </label>
+        </div>
+<!--        &lt;!&ndash; error block &ndash;&gt;-->
+<!--        <div-->
+<!--          class="invalid-feedback"-->
+<!--          *ngIf="submitted && uploadFormControl.type.errors?.required"-->
+<!--        >-->
+<!--          <sup>*</sup>File is required-->
+<!--        </div>-->
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-primary">Submit</button>
+        </div>
+        <div class="control">
+          <button type="button" routerLink=".." class="button is-link is-light">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
