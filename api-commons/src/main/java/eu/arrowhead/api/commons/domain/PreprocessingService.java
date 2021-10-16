@@ -1,19 +1,17 @@
 package eu.arrowhead.api.commons.domain;
 
 import lombok.SneakyThrows;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.tartarus.snowball.ext.PorterStemmer;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,13 +23,22 @@ public class PreprocessingService {
     @SneakyThrows
     public PreprocessingService() {
         try (InputStream resource = getClass().getResourceAsStream("/domain/english_stopwords.txt")) {
+            assert resource != null;
             this.stopwords =
                     new BufferedReader(new InputStreamReader(resource,
                             StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
         }
     }
 
-    public List<String> removeStopwordsAndStem(String input) {
+    public List<String> removeStopWords(List<String> sentences) {
+        List<String> result = new ArrayList<>();
+        for (String sentence : sentences) {
+            result.addAll(removeAll(sentence));
+        }
+        return result;
+    }
+
+    public List<String> removeStopWordsAndStem(String input) {
         Set<String> wordsWithoutStopwords = removeAll(input);
         return wordsWithoutStopwords.stream()
                 .map(word -> {
@@ -40,14 +47,6 @@ public class PreprocessingService {
                     stemmer.stem();
                     return stemmer.getCurrent();
                 }).collect(Collectors.toList());
-    }
-
-    public List<String> removeStopwords(List<String> sentences) {
-        List<String> result = new ArrayList<>();
-        for (String sentence : sentences) {
-            result.addAll(removeAll(sentence));
-        }
-        return result;
     }
 
     private Set<String> removeAll(String input) {

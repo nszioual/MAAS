@@ -16,10 +16,4 @@ public interface ModelRepository extends ElasticsearchRepository<Model, String> 
     List<Model> findByNameContaining(String name);
 
     Page<Model> findByNameContaining(String name, PageRequest pageRequest);
-
-    List<Model> findByFileName(String name);
-
-    List<Model> findByFileNameContaining(String name);
-
-    Page<Model> findByFileNameContaining(String name, PageRequest pageRequest);
 }

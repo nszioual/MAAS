@@ -34,10 +34,6 @@ public class DomainService {
         return domainRepository.findByName(name);
     }
 
-    public List<Domain> findByNameContaining(final String name) {
-        return domainRepository.findByNameContaining(name);
-    }
-
     public Page<Domain> findByNameContaining(final String name, PageRequest pageRequest) {
         return domainRepository.findByNameContaining(name, pageRequest);
     }
@@ -61,10 +57,6 @@ public class DomainService {
 
     public void delete(Domain domain) {
         domainRepository.delete(domain);
-    }
-
-    public void deleteAll() {
-        domainRepository.deleteAll();
     }
 
     public Domain update(Domain oldDomain, Domain newDomain) {

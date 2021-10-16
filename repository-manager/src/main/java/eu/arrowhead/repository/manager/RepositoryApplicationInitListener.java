@@ -85,9 +85,15 @@ public class RepositoryApplicationInitListener extends ApplicationInitListener {
         checkCoreSystemReachability(CoreSystem.ORCHESTRATOR);
         arrowheadService.updateCoreServiceURIs(CoreSystem.ORCHESTRATOR);
 
+        registerModelServices();
+        registerDomainServices();
+    }
+
+    private void registerModelServices() {
         ServiceRegistryRequestDTO getModelsRequestService = createServiceRegistryRequest(ApiConstants.GET_MODELS_SERVICE, ApiConstants.MODELS_URI, HttpMethod.GET);
-        getModelsRequestService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_MODEL_NAME, ApiConstants.REQUEST_PARAM_MODEL_NAME);
-        getModelsRequestService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_MODELS_PAGE, ApiConstants.REQUEST_PARAM_MODELS_PAGE);
+        getModelsRequestService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_NAME, ApiConstants.REQUEST_PARAM_NAME);
+        getModelsRequestService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_OFFSET, ApiConstants.REQUEST_PARAM_OFFSET);
+        getModelsRequestService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_LIMIT, ApiConstants.REQUEST_PARAM_LIMIT);
         arrowheadService.forceRegisterServiceToServiceRegistry(getModelsRequestService);
         logger.info("Service registered: {}", ApiConstants.GET_MODELS_SERVICE);
 
@@ -104,9 +110,31 @@ public class RepositoryApplicationInitListener extends ApplicationInitListener {
         logger.info("Service registered: {}", ApiConstants.DELETE_MODEL_SERVICE);
     }
 
+    private void registerDomainServices() {
+        ServiceRegistryRequestDTO getDomainsServiceRequest = createServiceRegistryRequest(ApiConstants.GET_DOMAINS_SERVICE, ApiConstants.DOMAINS_URI, HttpMethod.GET);
+        getDomainsServiceRequest.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_NAME, ApiConstants.REQUEST_PARAM_NAME);
+        getDomainsServiceRequest.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_OFFSET, ApiConstants.REQUEST_PARAM_OFFSET);
+        getDomainsServiceRequest.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_LIMIT, ApiConstants.REQUEST_PARAM_LIMIT);
+        arrowheadService.forceRegisterServiceToServiceRegistry(getDomainsServiceRequest);
+        logger.info("Service registered: {}", ApiConstants.GET_DOMAINS_SERVICE);
+
+        ServiceRegistryRequestDTO createDomainService = createServiceRegistryRequest(ApiConstants.CREATE_DOMAIN_SERVICE, ApiConstants.DOMAINS_URI, HttpMethod.POST);
+        arrowheadService.forceRegisterServiceToServiceRegistry(createDomainService);
+        logger.info("Service registered: {}", ApiConstants.CREATE_DOMAIN_SERVICE);
+
+        ServiceRegistryRequestDTO updateDomainService = createServiceRegistryRequest(ApiConstants.UPDATE_DOMAIN_SERVICE, ApiConstants.DOMAINS_URI, HttpMethod.PUT);
+        arrowheadService.forceRegisterServiceToServiceRegistry(updateDomainService);
+        logger.info("Service registered: {}", ApiConstants.UPDATE_DOMAIN_SERVICE);
+
+        ServiceRegistryRequestDTO deleteDomainService = createServiceRegistryRequest(ApiConstants.DELETE_DOMAIN_SERVICE, ApiConstants.DOMAINS_URI, HttpMethod.DELETE);
+        arrowheadService.forceRegisterServiceToServiceRegistry(deleteDomainService);
+        logger.info("Service registered: {}", ApiConstants.DELETE_DOMAIN_SERVICE);
+    }
+
     //-------------------------------------------------------------------------------------------------
     @Override
     public void customDestroy() {
+        // Destroy model services
         arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.GET_MODELS_SERVICE);
         logger.info("Service unregistered: {}", ApiConstants.GET_MODELS_SERVICE);
         arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.CREATE_MODEL_SERVICE);
@@ -115,6 +143,16 @@ public class RepositoryApplicationInitListener extends ApplicationInitListener {
         logger.info("Service unregistered: {}", ApiConstants.UPDATE_MODEL_SERVICE);
         arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.DELETE_MODEL_SERVICE);
         logger.info("Service unregistered: {}", ApiConstants.DELETE_MODEL_SERVICE);
+
+        // Destroy domain services
+        arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.GET_DOMAINS_SERVICE);
+        logger.info("Service unregistered: {}", ApiConstants.GET_DOMAINS_SERVICE);
+        arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.CREATE_DOMAIN_SERVICE);
+        logger.info("Service unregistered: {}", ApiConstants.CREATE_DOMAIN_SERVICE);
+        arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.UPDATE_DOMAIN_SERVICE);
+        logger.info("Service unregistered: {}", ApiConstants.UPDATE_DOMAIN_SERVICE);
+        arrowheadService.unregisterServiceFromServiceRegistry(ApiConstants.DELETE_DOMAIN_SERVICE);
+        logger.info("Service unregistered: {}", ApiConstants.DELETE_DOMAIN_SERVICE);
     }
 
     //=================================================================================================

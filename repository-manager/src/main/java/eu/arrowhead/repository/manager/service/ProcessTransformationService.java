@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public class ProcessTransformationService {
 
-    private WorkflowAutomationDriver workflowAutomationDriver;
+    private final WorkflowAutomationDriver workflowAutomationDriver;
 
     @Autowired
     public ProcessTransformationService(WorkflowAutomationDriver workflowAutomationDriver) {

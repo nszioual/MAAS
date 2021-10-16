@@ -16,6 +16,10 @@
     <name>client-skeleton-java-spring</name>
     <description>Arrowhead Client Skeleton using Spring Boot</description>
 
+    <properties>
+        <swagger.version>2.9.2</swagger.version>
+    </properties>
+
     <url>https://github.com/arrowhead-f/client-java-spring</url>
     <licenses>
         <license>
@@ -56,6 +60,18 @@
             <artifactId>lombok</artifactId>
             <version>1.18.16</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
 

@@ -86,7 +86,7 @@ public class TransformerProviderApplicationInitListener extends ApplicationInitL
         arrowheadService.updateCoreServiceURIs(CoreSystem.ORCHESTRATOR);
 
         final ServiceRegistryRequestDTO transformService = createServiceRegistryRequest(ApiConstants.MODEL_TRANSFORMER_SERVICE, ApiConstants.MODEL_TRANSFORMER_URI, HttpMethod.GET);
-        transformService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_MODEL_FORMAT, ApiConstants.REQUEST_PARAM_MODEL_FORMAT);
+        transformService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_FORMAT, ApiConstants.REQUEST_PARAM_FORMAT);
         arrowheadService.forceRegisterServiceToServiceRegistry(transformService);
         logger.info("Service registered: {}", ApiConstants.MODEL_TRANSFORMER_SERVICE);
     }

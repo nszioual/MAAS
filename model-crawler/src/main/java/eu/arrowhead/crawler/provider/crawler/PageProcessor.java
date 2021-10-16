@@ -11,6 +11,7 @@ import eu.arrowhead.model.storage.Utils;
 import eu.arrowhead.model.storage.metadata.RepositoryMetadata;
 import eu.arrowhead.model.storage.model.Domain;
 import eu.arrowhead.model.storage.model.Model;
+import eu.arrowhead.model.storage.model.Version;
 import eu.arrowhead.model.storage.service.ModelService;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -50,10 +51,8 @@ public abstract class PageProcessor {
     }
 
     protected void saveModel(String url, String extension, String content, RepositoryMetadata repositoryMetadata) {
-        // Get canonical process format
         CpfContentPair cpfResult = modelToCpf(extension, content);
 
-        // Set model metadata
         Model model = new Model();
         model.setPath(url);
         model.setRepository(repositoryMetadata);
@@ -62,12 +61,11 @@ public abstract class PageProcessor {
         model.setElements(CpfMetadataExtractor.extractMetadata(cpfResult.getCpf()));
         model.setName(FilenameUtils.removeExtension(Utils.extractFileNameFromURL(model.getPath())));
 
-        logger.info("Linking domain");
-        // Set domain data
         List<Domain> domains = modelService.getDomains();
         domainLinkerService.linkModelToDomains(model, domains);
+        model.getVersions().put(model.getVersionNumber(), new Version(model));
 
-        logger.info("storing process model in database {}", url);
+        logger.info("storing process model in Elasticsearch {}", url);
 
         modelService.create(model);
     }

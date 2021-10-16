@@ -1,78 +1,82 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { CrawlerService } from '../../services/crawler.service';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { interval, Subscription } from 'rxjs';
+import { AppConstants } from 'src/app/commons/app-constants';
 
 @Component({
   selector: 'app-crawler',
   templateUrl: './crawler.component.html',
-  styleUrls: ['./crawler.component.css']
+  styleUrls: ['./crawler.component.css'],
 })
 export class CrawlerComponent implements OnInit {
   submitted = false;
   searchForm: FormGroup;
+  showLoginModal = false;
+  isSelected = false;
 
   extensions: any = ['bpmn', 'epml'];
-  status: any = 'idle';
+  status: any = 'offline';
   collectedModels = 0;
   nonValidModels = 0;
   totalLinksCount = 0;
 
-  webSocketEndPoint = 'http://localhost:8888/socket';
   stompClient: any;
+  subscription: Subscription;
 
-  constructor(
-    public fb: FormBuilder,
-    private crawlerService: CrawlerService
-  ) {
+  constructor(public fb: FormBuilder, private crawlerService: CrawlerService) {}
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   ngOnInit(): void {
     this.searchForm = this.fb.group({
       userName: ['', []],
       passWord: ['', []],
-      extension: ['', []]
+      extension: ['', []],
     });
-    this.getCrawlerStatus();
+    this.connect();
+    this.subscription = interval(2000).subscribe(() => this.getStatus());
   }
 
   changeExtension(e): void {
-    console.log(e.value);
-    this.extension.setValue(e.target.value, {
-      onlySelf: true
-    });
-  }
-
-  updateStatus(): void {
-    this.getCrawlerStatus();
+    if (this.extension.value === '') {
+      this.isSelected = false;
+    } else {
+      this.isSelected = true;
+    }
   }
 
   connect(): void {
-    const socket = new SockJS(this.webSocketEndPoint);
-    this.stompClient = Stomp.over(socket);
     const self = this;
-    this.stompClient.connect({}, (frame) => {
-      console.log('Connected: ' + frame);
-      self.stompClient.subscribe('message/stats', (data) => {
-        console.log(data.body);
-      });
-    });
-  }
-
-  getCrawlerStatus(): void {
-    this.crawlerService.getCrawlerStatus().subscribe(
-      (data) => {
-        this.status = data.status;
-        this.collectedModels = data.collectedModels;
-        this.nonValidModels = data.nonValidModels;
-        this.totalLinksCount = data.totalLinksCount;
-        console.log(data);
+    const socket = new SockJS(AppConstants.SOCKET_ENDPOINT);
+    this.stompClient = Stomp.over(socket);
+    this.stompClient.connect(
+      {},
+      (frame) => {
+        console.log('Connected: ' + frame);
+        self.stompClient.subscribe('/topic/messages', (data) => {
+          self.updateStatus(JSON.parse(data.body));
+        });
       },
-      (error) => {
-        console.log(error);
+      () => {
+        this.status = 'offline';
       }
     );
+  }
+
+  getStatus(): void {
+    this.stompClient.send('/app/stats', {}, 'get');
+  }
+
+  updateStatus(outputData): void {
+    this.totalLinksCount = outputData.totalLinksCount;
+    this.collectedModels = outputData.collectedModels;
+    this.nonValidModels = outputData.nonValidModels;
+    this.status = outputData.crawlerStatus;
   }
 
   get extension(): any {
@@ -84,22 +88,31 @@ export class CrawlerComponent implements OnInit {
     if (!this.searchForm.valid) {
       return false;
     } else {
-      this.crawlerService.startCrawlerWithOptions(this.searchForm.value).subscribe(
-        (data) => {
-          this.status = data.status;
-          console.log(data);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+      this.showLoginModal = true;
+    }
+  }
+
+  startCrawlerWithUser(user): any {
+    this.showLoginModal = false;
+    if (user) {
+      this.searchForm.controls['userName'].setValue(user.userName);
+      this.searchForm.controls['passWord'].setValue(user.passWord);
+      this.crawlerService
+        .startCrawlerWithOptions(this.searchForm.value)
+        .subscribe(
+          (data) => {
+            console.log(data);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
     }
   }
 
   stopCrawler(): void {
     this.crawlerService.stopCrawler().subscribe(
       (data) => {
-        this.status = data.status;
         console.log(data);
       },
       (error) => {

@@ -4,7 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { saveAs } from 'file-saver';
 import { faUpload, faDownload } from '@fortawesome/free-solid-svg-icons';
-import { Similarity } from "../../model/similarity";
+import { Similarity } from '../../model/similarity';
+import { AppConstants } from 'src/app/commons/app-constants';
 
 @Component({
   selector: 'app-model-details',
@@ -29,8 +30,7 @@ export class ModelDetailsComponent implements OnInit {
     private modelService: ModelService,
     private route: ActivatedRoute,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.currentModelForm = this.fb.group({
@@ -44,20 +44,18 @@ export class ModelDetailsComponent implements OnInit {
           Validators.pattern('^[_A-z0-9]*((-|s)*[_A-z0-9])*$'),
         ],
       ],
-      type: ['', [Validators.required]],
+      description: ['', [Validators.maxLength(350)]],
       path: ['', [Validators.required]],
-      description: [
+      type: ['', [Validators.required]],
+      repoUrl: [
         '',
-        [
-          Validators.maxLength(350)
-        ],
+        [Validators.required],
       ],
-      domains: [''],
-      file_name: [''],
-      file: [null],
+      stars: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      forks: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      branches: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
     });
     this.getModel(this.route.snapshot.paramMap.get('id'));
-    // this.getDomains();
   }
 
   setFile(event): void {
@@ -74,17 +72,13 @@ export class ModelDetailsComponent implements OnInit {
         this.currentModelForm.patchValue({
           id: data.model.id,
           name: data.model.name,
-          type: data.model.modelingLanguage,
           description: data.model.description,
           path: data.model.path,
-          domains: data.model.domains
-        });
-        const domains = this.currentModelForm.value.domains;
-        Object.keys(domains).forEach((key) => {
-          const similarity = new Similarity();
-          similarity.domain = key;
-          similarity.result = Math.round(domains[key] * 100);
-          this.similarities.push(similarity);
+          type: data.model.modelingLanguage,
+          repoUrl: data.model.repository.url,
+          stars: data.model.repository.stars,
+          forks: data.model.repository.forks,
+          branches: data.model.repository.branches,
         });
         console.log(data);
       },
@@ -100,33 +94,33 @@ export class ModelDetailsComponent implements OnInit {
 
   updateModel(): void {
     this.submitted = true;
-    if (this.currentModelForm.valid) {
-      const formData: any = new FormData();
-      formData.append(
-        'model',
-        new Blob([JSON.stringify(this.currentModelForm.value)], {
-          type: 'application/json',
-        })
-      );
-
-      if (this.selectedFile) {
-        formData.append('file', this.selectedFile, this.selectedFile.name);
-      }
-
-      this.modelService
-        .update(this.currentModelForm.get('id').value, formData)
-        .subscribe(
-          (data) => {
-            console.log(data);
-            this.message = 'The model was updated successfully!';
-            this.versions = data.versions;
-            this.submitted = false;
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
+    if (!this.currentModelForm.valid) {
+      return;
     }
+    const formData: any = new FormData();
+    formData.append(
+      'model',
+      new Blob([JSON.stringify(this.currentModelForm.value)], {
+        type: 'application/json',
+      })
+    );
+
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+    }
+
+    this.modelService
+      .update(this.currentModelForm.get('id').value, formData)
+      .subscribe(
+        (data) => {
+          console.log(data);
+          this.message = 'The model was updated successfully!';
+          this.submitted = false;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
   }
 
   deleteModel(): void {

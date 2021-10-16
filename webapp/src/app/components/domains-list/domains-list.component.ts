@@ -15,7 +15,8 @@ export class DomainsListComponent implements OnInit {
   domains: any;
   totalElements: number;
   totalPages: number;
-  currentPage = 0;
+  offset = 0;
+  limit = 8;
   isSearching: boolean;
   name = new FormControl('');
 
@@ -27,7 +28,7 @@ export class DomainsListComponent implements OnInit {
   }
 
   retrieveDomains(): void {
-    this.domainService.getAllPageable(this.currentPage).subscribe(
+    this.domainService.getAllPageAble(this.offset, this.limit).subscribe(
       (data) => {
         this.domains = data.domains;
         this.totalElements = data.totalElements;
@@ -43,13 +44,13 @@ export class DomainsListComponent implements OnInit {
   onKeydown($event: KeyboardEvent): void {
     if ($event.key === 'Enter') {
       this.isSearching = this.name.value.length !== 0;
-      this.currentPage = 0;
+      this.offset = 0;
       this.searchName();
     }
   }
 
   searchName(): void {
-    this.domainService.findByNamePageable(this.name.value, this.currentPage).subscribe(
+    this.domainService.findByNamePageAble(this.name.value, this.offset, this.limit).subscribe(
       (data) => {
         this.domains = data.domains;
         this.totalElements = data.totalElements;
@@ -63,8 +64,8 @@ export class DomainsListComponent implements OnInit {
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage += 1;
+    if (this.offset < this.totalPages) {
+      this.offset += 1;
       if (!this.isSearching) {
         this.retrieveDomains();
       } else {
@@ -74,17 +75,13 @@ export class DomainsListComponent implements OnInit {
   }
 
   previousPage(): void {
-    if (this.currentPage > 0) {
-      this.currentPage -= 1;
+    if (this.offset > 0) {
+      this.offset -= 1;
       if (!this.isSearching) {
         this.retrieveDomains();
       } else {
         this.searchName();
       }
     }
-  }
-
-  getNumberOfTags(domain) {
-    return Object.keys(domain.tags).length;
   }
 }

@@ -20,22 +20,25 @@ public class DomainLinkerService {
     }
 
     public void linkModelToDomains(Model model, List<Domain> domains) {
-        if (model.getElements().getNodeNames().isEmpty()) {
-            return;
-        }
-
         model.setDomains(new HashMap<>());
-
         for (Domain domain : domains) {
             if (domain.getTags().isEmpty()) continue;
-            double similarity = 0.0;
-            List<String> processedNames = preprocessingService.removeStopwords(model.getElements().getNodeNames());
-            for (String nodeName : model.getElements().getNodeNames()) {
-                for (String tag : domain.getTags()) {
-                    similarity += new Jaccard(2).similarity(tag, nodeName);
-                }
+            if (model.getElements().getNodeNames().isEmpty()) {
+                model.getDomains().put(domain.getName(), 0.0);
+            } else {
+                model.getDomains().put(domain.getName(), computeSimilarity(domain, model));
             }
-            model.getDomains().put(domain.getName(), similarity / (processedNames.size() * domain.getTags().size()));
         }
+    }
+
+    private double computeSimilarity(Domain domain, Model model) {
+        double similarity = 0.0;
+        List<String> processedNames = preprocessingService.removeStopWords(model.getElements().getNodeNames());
+        for (String nodeName : processedNames) {
+            for (String tag : domain.getTags()) {
+                similarity += new Jaccard(2).similarity(tag, nodeName);
+            }
+        }
+        return similarity / (processedNames.size() * domain.getTags().size());
     }
 }

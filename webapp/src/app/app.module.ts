@@ -7,7 +7,7 @@ import { AddModelComponent } from './components/add-model/add-model.component';
 import { ModelDetailsComponent } from './components/model-details/model-details.component';
 import { ModelsListComponent } from './components/models-list/models-list.component';
 import { CrawlerComponent } from './components/crawler/crawler.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModelFilterComponent } from './components/model-filter/model-filter.component';
@@ -15,6 +15,8 @@ import { DomainsListComponent } from './components/domains-list/domains-list.com
 import { AddDomainComponent } from './components/add-domain/add-domain.component';
 import { DomainDetailsComponent } from './components/domain-details/domain-details.component';
 import { UploadModelsComponent } from './components/upload-models/upload-models.component';
+import { LoginModalComponent } from './login-modal/login-modal.component';
+import { TransformationModalComponent } from './transformation-modal/transformation-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { UploadModelsComponent } from './components/upload-models/upload-models.
     AddDomainComponent,
     DomainDetailsComponent,
     UploadModelsComponent,
+    LoginModalComponent,
+    TransformationModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,6 +39,7 @@ import { UploadModelsComponent } from './components/upload-models/upload-models.
     ReactiveFormsModule,
     HttpClientModule,
     FontAwesomeModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

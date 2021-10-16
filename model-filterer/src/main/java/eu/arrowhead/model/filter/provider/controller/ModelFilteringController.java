@@ -31,9 +31,12 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * The Model filtering controller.
+ */
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600)
-@RequestMapping("/filter")
+@RequestMapping(ApiConstants.MODEL_FILTER_URI)
 public class ModelFilteringController {
 
     private final ModelDTOMapperImpl modelDTOMapper;
@@ -46,6 +49,14 @@ public class ModelFilteringController {
 
     private List<Model> filteredModels;
 
+    /**
+     * Instantiates a new Model filtering controller.
+     *
+     * @param modelDTOMapper     the model dto mapper
+     * @param metadataDTOMapper  the metadata dto mapper
+     * @param modelQueryService  the model query service
+     * @param modelFilterService the model filter service
+     */
     @Autowired
     public ModelFilteringController(ModelDTOMapperImpl modelDTOMapper,
                                     MetadataDTOMapperImpl metadataDTOMapper,
@@ -57,13 +68,25 @@ public class ModelFilteringController {
         this.modelFilterService = modelFilterService;
     }
 
+    /**
+     * Echo response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping("/echo")
     public ResponseEntity<?> echo() {
         return ResponseEntity.ok("Got it!");
     }
 
+    /**
+     * Gets models by criteria.
+     *
+     * @param searchFormDTO the search form dto
+     * @return the models by criteria
+     */
     @PostMapping(value = "")
-    @ResponseBody public ResponseEntity<?> getModelsByCriteria(@RequestBody SearchFormDTO searchFormDTO) {
+    @ResponseBody
+    public ResponseEntity<?> getModelsByCriteria(@RequestBody SearchFormDTO searchFormDTO) {
         filteredModels = modelQueryService.findModelsByCriteria(modelFilterService.getSearchCriteria(searchFormDTO));
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("models", filteredModels.stream().map(model -> convertToDTO(model)).collect(Collectors.toList()));
@@ -71,11 +94,22 @@ public class ModelFilteringController {
         }});
     }
 
+    /**
+     * Gets models by criteria.
+     *
+     * @param name   the name
+     * @param format the format
+     * @param elems  the elems
+     * @param repo   the repo
+     * @return the models by criteria
+     */
     @GetMapping(value = "")
-    @ResponseBody public ResponseEntity<?> getModelsByCriteria(@RequestParam(value = "name", required = false) String name,
-                                                 @RequestParam(value = "format",  required = false) String format,
-                                                 @RequestParam(value = "elems",  required = false) String elems,
-                                                 @RequestParam(value = "repo", required = false) String repo) {
+    @ResponseBody
+    public ResponseEntity<?> getModelsByCriteria(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "format", required = false) String format,
+            @RequestParam(value = "elems", required = false) String elems,
+            @RequestParam(value = "repo", required = false) String repo) {
         filteredModels = modelQueryService.findModelsByCriteria(modelFilterService.getSearchCriteria(name, format, elems, repo));
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("models", filteredModels.stream().map(model -> convertToDTO(model)).collect(Collectors.toList()));
@@ -83,8 +117,15 @@ public class ModelFilteringController {
         }});
     }
 
+    /**
+     * Download bundle response entity.
+     *
+     * @param target the target
+     * @return the response entity
+     */
     @GetMapping(value = "download-bundle", produces = ApiConstants.APPLICATION_ZIP)
-    public ResponseEntity<StreamingResponseBody> downloadBundle(@RequestParam(value = "target",  required = false) String target) {
+    public ResponseEntity<StreamingResponseBody> downloadBundle(
+            @RequestParam(value = "target", required = false) String target) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"models.zip\"")
                 .body(out -> {

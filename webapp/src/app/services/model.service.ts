@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 const baseUrl = 'http://localhost:8887/models';
 
@@ -14,8 +14,8 @@ export class ModelService {
     return this.http.get(baseUrl);
   }
 
-  getAllPageable(page): Observable<any> {
-    return this.http.get(`${baseUrl}?p=${page}`);
+  getAllPageAble(offset, limit): Observable<any> {
+    return this.http.get(`${baseUrl}?offset=${offset}&limit=${limit}`);
   }
 
   get(id): Observable<any> {
@@ -34,12 +34,8 @@ export class ModelService {
     return this.http.delete(`${baseUrl}/${id}`, { responseType: 'text' });
   }
 
-  findByName(name): Observable<any> {
-    return this.http.get(`${baseUrl}?name=${name}`);
-  }
-
-  findByNamePageable(name, page): Observable<any> {
-    return this.http.get(`${baseUrl}?name=${name}&p=${page}`);
+  findByNamePageAble(name, offset, limit): Observable<any> {
+    return this.http.get(`${baseUrl}?name=${name}&offset=${offset}&=limit=${limit}`);
   }
 
   downloadVersion(id): Observable<any> {

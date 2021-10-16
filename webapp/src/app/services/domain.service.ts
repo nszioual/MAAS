@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 const baseUrl = 'http://localhost:8887/domains';
@@ -9,14 +9,15 @@ const baseUrl = 'http://localhost:8887/domains';
 })
 export class DomainService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<any> {
     return this.http.get(baseUrl);
   }
 
-  getAllPageable(page): Observable<any> {
-    return this.http.get(`${baseUrl}?p=${page}`);
+  getAllPageAble(offset, limit): Observable<any> {
+    return this.http.get(`${baseUrl}?offset=${offset}&limit=${limit}`);
   }
 
   get(id): Observable<any> {
@@ -32,14 +33,10 @@ export class DomainService {
   }
 
   delete(id): Observable<any> {
-    return this.http.delete(`${baseUrl}/${id}`, { responseType: 'text' });
+    return this.http.delete(`${baseUrl}/${id}`, {responseType: 'text'});
   }
 
-  findByName(name): Observable<any> {
-    return this.http.get(`${baseUrl}?name=${name}`);
-  }
-
-  findByNamePageable(name, page): Observable<any> {
-    return this.http.get(`${baseUrl}?name=${name}&p=${page}`);
+  findByNamePageAble(name, offset, limit): Observable<any> {
+    return this.http.get(`${baseUrl}?name=${name}&offset=${offset}&limit=${limit}`);
   }
 }

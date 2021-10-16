@@ -7,7 +7,7 @@ import { UploadService } from '../../services/upload.service';
 @Component({
   selector: 'app-upload-models',
   templateUrl: './upload-models.component.html',
-  styleUrls: ['./upload-models.component.css']
+  styleUrls: ['./upload-models.component.css'],
 })
 export class UploadModelsComponent implements OnInit {
   faUpload = faUpload;
@@ -17,44 +17,21 @@ export class UploadModelsComponent implements OnInit {
   selectedFile = null;
   selectedFileName = '';
 
-  urlRegex = '\'^(http:\\\\/\\\\/www\\\\.|https:\\\\/\\\\/www\\\\.|http:\\\\/\\\\/|https:\\\\/\\\\/)?[a-z0-9]+([\\\\-\\\\.]{1}[a-z0-9]+)*\\\\.[a-z]{2,5}(:[0-9]{1,5})?(\\\\/.*)?$';
+  urlRegex =
+    "'^(http:\\\\/\\\\/www\\\\.|https:\\\\/\\\\/www\\\\.|http:\\\\/\\\\/|https:\\\\/\\\\/)?[a-z0-9]+([\\\\-\\\\.]{1}[a-z0-9]+)*\\\\.[a-z]{2,5}(:[0-9]{1,5})?(\\\\/.*)?$";
 
   constructor(
     public fb: FormBuilder,
     private uploadService: UploadService,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.uploadForm = this.fb.group({
-      repoUrl: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(this.urlRegex)
-        ],
-      ],
-      stars: [
-        '', [
-          Validators.required,
-          Validators.pattern('^[0-9]+$'),
-        ]
-      ],
-      forks: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^[0-9]+$'),
-        ]
-      ],
-      branches: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern('^[0-9]+$'),
-        ]
-      ]
+      repoUrl: ['', [Validators.required, Validators.pattern(this.urlRegex)]],
+      stars: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      forks: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      branches: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
     });
   }
 

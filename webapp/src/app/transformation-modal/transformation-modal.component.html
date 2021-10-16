@@ -1,0 +1,27 @@
+<div class="modal is-active">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Choose a target format</p>
+      <button class="delete" aria-label="close" (click)="cancel()"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="field form-group" [formGroup]="modalForm">
+        <label class="subtitle is-6">Target format</label>
+        <div class="control">
+          <div class="select is-normal">
+            <select formControlName="target">
+              <option value="">Choose a target format</option>
+              <option *ngFor="let extension of extensions" [ngValue]="extension">{{ extension }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-success" (click)="confirm()">Confirm</button>
+      <button class="button" (click)="cancel()">Cancel</button>
+    </footer>
+  </div>
+</div>

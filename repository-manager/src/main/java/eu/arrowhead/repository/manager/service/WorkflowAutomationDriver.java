@@ -63,7 +63,7 @@ public class WorkflowAutomationDriver {
 
     private TransformationListDTO consumeTransformationService(OrchestrationResultDTO orchestrationResult, String format) {
         final String token = orchestrationResult.getAuthorizationTokens() == null ? null : orchestrationResult.getAuthorizationTokens().get(getInterface());
-        final String[] queryParam = {orchestrationResult.getMetadata().get(ApiConstants.REQUEST_PARAM_KEY_MODEL_FORMAT), String.valueOf(format)};
+        final String[] queryParam = {orchestrationResult.getMetadata().get(ApiConstants.REQUEST_PARAM_KEY_FORMAT), String.valueOf(format)};
         return arrowheadService.consumeServiceHTTP(TransformationListDTO.class, HttpMethod.valueOf(orchestrationResult.getMetadata().get(ApiConstants.HTTP_METHOD)),
                 orchestrationResult.getProvider().getAddress(), orchestrationResult.getProvider().getPort(), orchestrationResult.getServiceUri(),
                 getInterface(), token, null, queryParam);

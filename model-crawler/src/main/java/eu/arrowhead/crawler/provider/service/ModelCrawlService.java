@@ -33,12 +33,6 @@ public class ModelCrawlService {
     @Value("${crawler.politeness.delay}")
     private Integer politenessDelay;
 
-    @Value("${github.user.name}")
-    private String userName;
-
-    @Value("${github.user.password}")
-    private String userPassword;
-
     @Autowired
     public ModelCrawlService(ModelService modelService, DomainLinkerService domainLinkerService) {
         this.modelService = modelService;
@@ -62,40 +56,22 @@ public class ModelCrawlService {
     }
 
     @Async
-    public void startCrawler(String startingUrl, String format) {
-        logger.info("started crawling potential process models...");
-        crawlerIsRunning = true;
-        crawler = new Crawler(new GitHubSearchPageProcessor(politenessDelay, modelService, domainLinkerService, userName, userPassword, format, stats));
-        crawler.addUrl(startingUrl);
-        crawler.crawl();
-    }
-
-    @Async
     public void startCrawlerWithOptions(String startingUrl, String format, String givenUsername, String givenPassword) {
-        logger.info("started crawling potential process models...");
+        logger.info("started crawling process models...");
         crawlerIsRunning = true;
         crawler = new Crawler(new GitHubSearchPageProcessor(politenessDelay, modelService, domainLinkerService, givenUsername, givenPassword, format, stats));
         crawler.addUrl(startingUrl);
         crawler.crawl();
     }
 
-    public void stopCrawler() {
-        try {
-            logger.info("stopping crawling service...");
-
-            crawlerIsRunning = false;
-
-            crawler.stopExecutorService(5);
-        } catch (InterruptedException e) {
-            logger.error(e.toString());
-        }
+    public void stopCrawler() throws InterruptedException {
+        logger.info("stopping crawling service...");
+        crawler.stopExecutorService(5);
+        crawlerIsRunning = false;
     }
 
     public CrawlerStatistics getCrawlerStatistics() {
-        return stats;
-    }
-
-    public String getStatus() {
-        return crawlerIsRunning ? "running" : "idle";
+        String crawlerStatus = crawlerIsRunning ? "running" : "standby";
+        return new CrawlerStatistics(stats.getCollectedModels(), stats.getNonValidModels(), stats.getTotalLinksCount(), crawlerStatus);
     }
 }

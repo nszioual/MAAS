@@ -39,7 +39,6 @@
     <thead>
     <tr>
       <th><abbr>Name</abbr></th>
-      <th><abbr>Number of Tags</abbr></th>
       <th><abbr>Creation Date</abbr></th>
       <th><abbr>Modification Date</abbr></th>
       <th><abbr>Actions</abbr></th>
@@ -48,7 +47,6 @@
     <tbody>
     <tr *ngFor="let domain of domains; let i = index">
       <td>{{ domain.name }}</td>
-      <td>{{ getNumberOfTags(domain) }}</td>
       <td>28-5-2021 01:50:57</td>
       <td>28-5-2021 01:50:57</td>
       <td>
@@ -73,19 +71,19 @@
 </div>
 
 <div class="field has-addons is-pulled-right">
-  <button class="button" (click)="previousPage()" type="button" [disabled]="currentPage == 0">
+  <button class="button" (click)="previousPage()" type="button" [disabled]="offset == 0">
     <span>Previous</span>
   </button>
 
   <button class="button" (click)="nextPage()" type="button"
-          [disabled]="currentPage == totalPages - 1|| totalElements <= 8">
+          [disabled]="offset == totalPages - 1|| totalElements <= 8">
     <span>Next page</span>
   </button>
 </div>
 
 <ul>
   <li>
-    <h2 class="subtitle is-6">Page: {{currentPage + 1}} of {{totalPages}}</h2>
+    <h2 class="subtitle is-6">Page: {{offset + 1}} of {{totalPages}}</h2>
   </li>
   <li>
     <h2 class="subtitle is-6">Total results: {{totalElements}}</h2>

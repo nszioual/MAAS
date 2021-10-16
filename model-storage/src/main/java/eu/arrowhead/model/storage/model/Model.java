@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -25,9 +26,6 @@ public class Model {
 
     @Id
     private String id;
-
-    @Field(type = FieldType.Text, name = "original_id")
-    private String originalId;
 
     @Field(type = FieldType.Text, name = "name")
     private String name;
@@ -44,9 +42,6 @@ public class Model {
     @Field(type = FieldType.Text, name = "path")
     private String path;
 
-    @Field(type = FieldType.Text, name = "hash")
-    private String hash;
-
     @Field(type = FieldType.Text, name = "model")
     private String model;
 
@@ -60,18 +55,39 @@ public class Model {
     private RepositoryMetadata repository;
 
     @Field(type = FieldType.Object, name = "domains")
-    Map<String, Double> domains;
+    Map<String, Double> domains = new HashMap<>();
 
-    @Field(type = FieldType.Double, name = "version_number")
-    private double versionNumber = 1.0;
+    @Field(type = FieldType.Object, name = "versions")
+    Map<String, Version> versions = new HashMap<>();
+
+    @Field(type = FieldType.Text, name = "version_number")
+    private String versionNumber = "1.0.0";
 
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
     private Long createdAt;
 
     @LastModifiedDate
-    @JsonFormat (shape = JsonFormat.Shape.STRING, pattern ="yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ")
     private Long updatedAt;
+
+    public Model(
+            String name,
+            String description,
+            String path,
+            String type,
+            String repoUrl,
+            String versionNumber,
+            int stars,
+            int forks,
+            int branches) {
+        this.name = name;
+        this.description = description;
+        this.path = path;
+        this.modelingLanguage = type;
+        this.versionNumber = versionNumber;
+        this.repository = new RepositoryMetadata(repoUrl, stars, forks, branches);
+    }
 
     @Override
     public boolean equals(Object o) {

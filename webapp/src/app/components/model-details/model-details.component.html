@@ -9,9 +9,9 @@
 
 <h1 class="title is-2">Update Model</h1>
 
-<div class="box columns">
-  <div class="column is-half">
-    <form [formGroup]="currentModelForm" (ngSubmit)="updateModel()">
+<form [formGroup]="currentModelForm" (ngSubmit)="updateModel()">
+  <div class="box columns">
+    <div class="column is-half">
       <div class="field form-group">
         <label class="label">Name</label>
         <div class="control">
@@ -150,25 +150,157 @@
           </button>
         </div>
         <div class="control">
-          <button type="button" routerLink="../.." class="button is-info is-light">
+          <button
+            type="button"
+            routerLink="../.."
+            class="button is-info is-light"
+          >
             Return
           </button>
         </div>
       </div>
-    </form>
 
-    <p>{{ message }}</p>
-  </div>
+      <p>{{ message }}</p>
+    </div>
 
-  <div class="column is-half">
+    <div class="column is-half">
+      <div class="field form-group">
+        <label class="label">Repository URL</label>
+        <div class="control">
+          <input
+            id="repoUrl"
+            formControlName="repoUrl"
+            class="input"
+            type="text"
+            required
+            placeholder="URL to the repository"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.repoUrl.touched || submitted) &&
+            modelFormControl.repoUrl.errors?.required
+          "
+        >
+          <sup>*</sup>Repository URL is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.repoUrl.touched || submitted) &&
+            modelFormControl.repoUrl.errors?.pattern
+          "
+        >
+          <sup>*</sup>Given URL is invalid
+        </div>
+      </div>
 
-    <div class="field form-group">
-      <label class="label">Domains</label>
-      <div class="tags are-large">
-        <span *ngFor="let sim of similarities">
-          <span class="tag">{{sim.domain}} {{sim.result}}%</span>
-        </span>
+      <div class="field form-group">
+        <label class="label">Stars</label>
+        <div class="control">
+          <input
+            id="stars"
+            formControlName="stars"
+            required
+            class="input"
+            min="0"
+            step="any"
+            type="number"
+            placeholder="Number of repository stars"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.stars.touched || submitted) &&
+            modelFormControl.stars.errors?.required
+          "
+        >
+          <sup>*</sup>Stars number is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.stars.touched || submitted) &&
+            modelFormControl.stars.errors?.pattern
+          "
+        >
+          <sup>*</sup>Number format is invalid
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Forks</label>
+        <div class="control">
+          <input
+            id="forks"
+            formControlName="forks"
+            required
+            class="input"
+            min="0"
+            step="any"
+            type="number"
+            placeholder="Number of repository forks"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.forks.touched || submitted) &&
+            modelFormControl.forks.errors?.required
+          "
+        >
+          <sup>*</sup>Forks number is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.forks.touched || submitted) &&
+            modelFormControl.forks.errors?.pattern
+          "
+        >
+          <sup>*</sup>Number format is invalid
+        </div>
+      </div>
+
+      <div class="field form-group">
+        <label class="label">Branches</label>
+        <div class="control">
+          <input
+            id="branches"
+            formControlName="branches"
+            required
+            class="input"
+            min="0"
+            step="any"
+            type="number"
+            placeholder="Number of repository branches"
+          />
+        </div>
+        <!-- error block -->
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.branches.touched || submitted) &&
+            modelFormControl.branches.errors?.required
+          "
+        >
+          <sup>*</sup>Branch number is required
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            (modelFormControl.branches.touched || submitted) &&
+            modelFormControl.branches.errors?.pattern
+          "
+        >
+          <sup>*</sup>Number format is invalid
+        </div>
       </div>
     </div>
   </div>
-</div>
+</form>

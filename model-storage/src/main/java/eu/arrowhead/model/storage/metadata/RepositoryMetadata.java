@@ -11,8 +11,8 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @AllArgsConstructor
 public class RepositoryMetadata {
 
-    @Field(type = FieldType.Text, name = "repository")
-    private String repository = "";
+    @Field(type = FieldType.Text, name = "url")
+    private String url = "";
 
     @Field(type = FieldType.Integer, name = "stars")
     private int stars = 0;

@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import eu.arrowhead.api.commons.constants.ApiConstants;
 import eu.arrowhead.api.commons.domain.DomainLinkerService;
 import eu.arrowhead.api.commons.util.GHURLUtil;
+import eu.arrowhead.crawler.provider.commons.CrawlerConstants;
 import eu.arrowhead.crawler.provider.commons.CrawlerStatistics;
 import eu.arrowhead.crawler.provider.commons.Utils;
 import eu.arrowhead.model.storage.metadata.RepositoryMetadata;
@@ -14,19 +15,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class GitHubSearchPageProcessor extends PageProcessor {
 
     private static final Pattern MODEL_PATTERN = Pattern.compile(".*(\\.(bpmn|epml))$");
-
-    private static int sizeLower = 0;
-    private static int sizeUpper = 250;
-    private static int numberOfResults = 0;
     private final static int maxSearchResults = 1000;
     private final static int intervalStepSize = 250;
+    private static int numberOfResults = 0;
+    private static int sizeLower = CrawlerConstants.GSEARCH_LOWER;
+    private static int sizeUpper = CrawlerConstants.GSEARCH_UPPER;
 
     private final String userName;
     private final String userPassword;
@@ -51,21 +52,20 @@ public class GitHubSearchPageProcessor extends PageProcessor {
     public Set<String> processPage(String url) {
         try {
             Thread.sleep(this.politenessDelay); // Add delay between requests
-            if (MODEL_PATTERN.matcher(url).matches()) {
-                String extension = url.substring(url.lastIndexOf(".") + 1);
-                if (extension.equalsIgnoreCase(format)) {
-                    Document doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
-                    String model = Utils.downloadModel(Utils.getDownloadURL(doc));
-                    if (!modelIsValid(url, model)) {
-                        logger.warn("skipping non valid model: {}", url);
-                        stats.incrementNonValidModels();
-                        return new HashSet<>();
-                    }
-                    saveModel(url, extension, model, getRepositoryMetadata(url));
-                    stats.incrementCollectedModels();
-                }
-            } else {
+            if (!MODEL_PATTERN.matcher(url).matches()) {
                 return getOutgoingLinks(url);
+            }
+            String extension = url.substring(url.lastIndexOf(".") + 1);
+            if (extension.equalsIgnoreCase(format)) {
+                Document doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
+                String model = Utils.downloadModel(Utils.getDownloadURL(doc));
+                if (!modelIsValid(url, model)) {
+                    logger.warn("skipping non valid model: {}", url);
+                    stats.incrementNonValidModels();
+                    return new HashSet<>();
+                }
+                saveModel(url, extension, model, getRepositoryMetadata(url));
+                stats.incrementCollectedModels();
             }
         } catch (IOException | InterruptedException e) {
             logger.warn("URL: {}, {}", url, e);
@@ -79,37 +79,10 @@ public class GitHubSearchPageProcessor extends PageProcessor {
         Set<String> outgoingLinks = new HashSet<>();
 
         // Configure webclient and set a login user session
-        WebClient webClient = Utils.getConfiguredWebClient();
-        HtmlPage loginPage = webClient.getPage(ApiConstants.GITHUB_LOGIN_URL);
-        HtmlForm form = loginPage.querySelector("form");
-        HtmlTextInput loginField = form.getInputByName("login");
-        loginField.type(this.userName);
-        HtmlPasswordInput passwordField = form.getInputByName("password");
-        passwordField.type(this.userPassword);
-        HtmlSubmitInput loginBtn = loginPage.querySelector("#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block");
-        loginBtn.click();
-        HtmlPage page = webClient.getPage(url);
-        Document document = Jsoup.parse(page.asXml());
-        webClient.close();
+        Document document = getAuthenticatedPage(url);
 
         // Setup pagination on search page
-        Elements nextPageLinkElement = document.select(".next_page");
-        Elements searchResultElement = document.select("div.flex-column:nth-child(1) > h3:nth-child(1)");
-        if (searchResultElement.size() > 0 && nextPageLinkElement.size() > 0) {
-            String searchResults = searchResultElement.first().childNode(0).toString().replaceAll(",", "").replaceAll("[^0-9]", "");
-            if (!searchResults.isEmpty()) {
-                numberOfResults = Integer.parseInt(searchResults);
-                if (numberOfResults > maxSearchResults) {
-                    outgoingLinks.add(GHURLUtil.buildGitHubSearchURL(format, 1, sizeLower, sizeLower + intervalStepSize / 2));
-                    outgoingLinks.add(GHURLUtil.buildGitHubSearchURL(format, 1, sizeLower + intervalStepSize / 2, sizeUpper));
-                } else {
-                    sizeLower += intervalStepSize;
-                    sizeUpper += intervalStepSize;
-                    outgoingLinks.add(GHURLUtil.buildGitHubSearchURL(format, 1, sizeLower, sizeUpper));
-                    outgoingLinks.add(ApiConstants.GITHUB_BASE_URL + document.select(".next_page").first().attr("href"));
-                }
-            }
-        }
+        getPaginationLinks(outgoingLinks, document);
 
         // Fetch all outgoing links leading to files in the file tree
         if (numberOfResults <= maxSearchResults) {
@@ -127,12 +100,46 @@ public class GitHubSearchPageProcessor extends PageProcessor {
         return outgoingLinks;
     }
 
+    private void getPaginationLinks(Set<String> outgoingLinks, Document document) {
+        Elements nextPageLinkElement = document.select(".next_page");
+        Elements searchResultElement = document.select("div.flex-column:nth-child(1) > h3:nth-child(1)");
+        if (!(searchResultElement.size() > 0 && nextPageLinkElement.size() > 0)) return;
+        String searchResults = searchResultElement.first().childNode(0).toString().replaceAll(",", "").replaceAll("[^0-9]", "");
+        if (searchResults.isEmpty()) return;
+        numberOfResults = Integer.parseInt(searchResults);
+        if (numberOfResults > maxSearchResults) {
+            outgoingLinks.add(GHURLUtil.buildGitHubSearchURL(format, 1, sizeLower, sizeLower + intervalStepSize / 2));
+            outgoingLinks.add(GHURLUtil.buildGitHubSearchURL(format, 1, sizeLower + intervalStepSize / 2, sizeUpper));
+        } else {
+            sizeLower += intervalStepSize;
+            sizeUpper += intervalStepSize;
+            outgoingLinks.add(GHURLUtil.buildGitHubSearchURL(format, 1, sizeLower, sizeUpper));
+            outgoingLinks.add(ApiConstants.GITHUB_BASE_URL + document.select(".next_page").first().attr("href"));
+        }
+    }
+
+    private Document getAuthenticatedPage(String url) throws IOException {
+        WebClient webClient = Utils.getConfiguredWebClient();
+        HtmlPage loginPage = webClient.getPage(ApiConstants.GITHUB_LOGIN_URL);
+        HtmlForm form = loginPage.querySelector("form");
+        HtmlTextInput loginField = form.getInputByName("login");
+        loginField.type(this.userName);
+        HtmlPasswordInput passwordField = form.getInputByName("password");
+        passwordField.type(this.userPassword);
+        HtmlSubmitInput loginBtn = loginPage.querySelector("#login > div.auth-form-body.mt-3 > form > div > input.btn.btn-primary.btn-block");
+        loginBtn.click();
+        HtmlPage page = webClient.getPage(url);
+        Document document = Jsoup.parse(page.asXml());
+        webClient.close();
+        return document;
+    }
+
     private RepositoryMetadata getRepositoryMetadata(String modelURL) throws IOException {
         String repoURL = GHURLUtil.getGitHubURL(modelURL);
         Document doc = Jsoup.connect(repoURL).userAgent(USER_AGENT).get();
 
         RepositoryMetadata metadata = new RepositoryMetadata();
-        metadata.setRepository(repoURL);
+        metadata.setUrl(repoURL);
 
         Elements socialCount = doc.select("a.social-count");
         if (socialCount.size() > 1) {
@@ -147,7 +154,7 @@ public class GitHubSearchPageProcessor extends PageProcessor {
             int branchCount = Integer.parseInt(branches.first().childNode(3).childNode(0).toString().trim());
             metadata.setBranches(branchCount);
         }
-        
+
         return metadata;
     }
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class TransformationService {
@@ -35,16 +34,6 @@ public class TransformationService {
         Transformation transformation = ModelTransformationFactory.getTransformer(format);
         return transformation.transform(content);
     }
-
-//    public TransformationDTO transformModelToModel(Model model) {
-//        Transformation transformation = ModelTransformationFactory.getTransformer(model.getModelingLanguage().toLowerCase(Locale.ROOT));
-//        return convertToDTO(model, transformation.transform(model.getModel()));
-//    }
-
-//    public TransformationDTO transformModelToCpf(Model model) {
-//        Transformation transformation = ModelTransformationFactory.getTransformer(model.getModelingLanguage().toLowerCase(Locale.ROOT));
-//        return convertToDTO(model, transformation.toCpf(model.getModel()).getContent());
-//    }
 
     public List<TransformationDTO> getProcessModels(final String format) {
         List<TransformationDTO> transformationDTOs = new ArrayList<>();

@@ -11,10 +11,6 @@ export class CrawlerService {
 
   constructor(private http: HttpClient) {}
 
-  getCrawlerStatus(): Observable<any> {
-    return this.http.get(baseUrl);
-  }
-
   startCrawler(format): Observable<any> {
     return this.http.get(`${baseUrl}?format=${format}`);
   }

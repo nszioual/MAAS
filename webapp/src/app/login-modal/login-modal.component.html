@@ -1,0 +1,39 @@
+<div class="modal is-active">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">GitHub Account Required to Start Crawling</p>
+      <button class="delete" aria-label="close" (click)="cancel()"></button>
+    </header>
+    <section class="modal-card-body">
+      <div class="column is-three-fifths">
+        <label class="label">Username</label>
+        <div class="control">
+          <input
+            [(ngModel)]="GitHubUserName"
+            class="input"
+            type="text"
+            placeholder="GitHub username"
+          />
+        </div>
+      </div>
+      <div class="column is-three-fifths">
+        <label class="label">Password</label>
+        <div class="control">
+          <input
+            [(ngModel)]="GitHubPassWord"
+            class="input"
+            type="password"
+            placeholder="GitHub password"
+          />
+        </div>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <div class="is-pulled-right">
+        <button class="button is-success" (click)="login()">Confirm</button>
+        <button class="button" (click)="cancel()">Cancel</button>
+      </div>
+    </footer>
+  </div>
+</div>

@@ -93,7 +93,7 @@ public class CrawlerProviderApplicationInitListener extends ApplicationInitListe
         arrowheadService.updateCoreServiceURIs(CoreSystem.ORCHESTRATOR);
 
         final ServiceRegistryRequestDTO crawlerService = createServiceRegistryRequest(ApiConstants.MODEL_CRAWLER_SERVICE, ApiConstants.MODEL_CRAWLER_URI, HttpMethod.GET);
-        crawlerService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_MODEL_FORMAT, ApiConstants.REQUEST_PARAM_MODEL_FORMAT);
+        crawlerService.getMetadata().put(ApiConstants.REQUEST_PARAM_KEY_FORMAT, ApiConstants.REQUEST_PARAM_FORMAT);
         arrowheadService.forceRegisterServiceToServiceRegistry(crawlerService);
         logger.info("Service registered: {}", ApiConstants.MODEL_CRAWLER_SERVICE);
 

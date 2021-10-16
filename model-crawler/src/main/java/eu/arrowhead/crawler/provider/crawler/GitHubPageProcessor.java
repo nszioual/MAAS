@@ -28,17 +28,20 @@ public class GitHubPageProcessor extends PageProcessor {
     public Set<String> processPage(String url) {
         try {
             Thread.sleep(this.politenessDelay); // Add delay between requests
-            if (MODEL_PATTERN.matcher(url).matches()) {
-                String model =  Utils.downloadModel(Utils.getDownloadURL(Jsoup.connect(url).userAgent(USER_AGENT).get()));
-                if (modelIsValid(url, model)) {
-                    String extension = StringUtil.getExtensionByStringHandling(url).get();
-                    saveModel(url, extension, model);
-                } else {
-                    logger.warn("skipping non valid model: {}", url);
-                }
-            } else {
+
+            if (!MODEL_PATTERN.matcher(url).matches()) {
                 return getOutgoingLinks(url);
             }
+
+            String model = Utils.downloadModel(Utils.getDownloadURL(Jsoup.connect(url).userAgent(USER_AGENT).get()));
+
+            if (modelIsValid(url, model)) {
+                String extension = StringUtil.getExtensionByStringHandling(url).get();
+                saveModel(url, extension, model);
+            } else {
+                logger.warn("skipping non valid model: {}", url);
+            }
+
         } catch (IOException | InterruptedException e) {
             logger.warn("URL: {}, {}", url, e);
         }

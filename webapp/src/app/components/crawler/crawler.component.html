@@ -6,32 +6,36 @@
   </ul>
 </nav>
 
-<h1 class="title is-2">GitHub Model Crawler</h1>
+<h1 class="title is-2">Model Crawler</h1>
 
 <div class="columns is-multiline">
   <div class="column">
-    <article class="box notification is-link">
-      <p class="title">{{totalLinksCount}}</p>
+    <article class="box notification is-link" data-tooltip="The number of links collected by the crawler">
+      <p class="title">{{ totalLinksCount }}</p>
       <p class="subtitle">links collected</p>
     </article>
   </div>
   <div class="column">
-    <article class="box notification is-info">
-      <p class="title">{{collectedModels}}</p>
-      <p class="subtitle">models collected</p>
+    <article class="box notification is-info" data-tooltip="The number of models collected, validated, and stored by the crawler">
+      <p class="title">{{ collectedModels }}</p>
+      <p class="subtitle">valid models</p>
     </article>
   </div>
   <div class="column">
-    <article class="box notification is-danger">
-      <p class="title">{{nonValidModels}}</p>
-      <p class="subtitle">models skipped</p>
+    <article class="box notification is-danger" data-tooltip="The number of models that are not stored because of invalid structure">
+      <p class="title">{{ nonValidModels }}</p>
+      <p class="subtitle">invalid models</p>
     </article>
   </div>
   <div class="column">
-    <div class="box notification" [ngClass]="status == 'idle' ? 'is-warning' : 'is-primary'">
-      <div class="title">{{status}}...</div>
-      <div class="subtitle">crawler status</div>
-    </div>
+    <article
+      class="box notification"
+      [ngClass]="status == 'offline' ? 'is-warning' : 'is-primary'"
+      data-tooltip="The current crawler status"
+    >
+      <p class="title">{{ status }}</p>
+      <p class="subtitle">crawler status</p>
+    </article>
   </div>
 </div>
 
@@ -44,43 +48,34 @@
             <div class="field form-group">
               <div class="control">
                 <div class="select">
-                  <select (change)="changeExtension($event)" formControlName="extension">
+                  <select
+                    (change)="changeExtension($event)"
+                    [attr.disabled]="status == 'running' || status == 'offline' ? '' : null"
+                    formControlName="extension"
+                  >
                     <option value="">Choose model extension</option>
-                    <option *ngFor="let extension of extensions" [ngValue]="extension">{{extension}}</option>
+                    <option
+                      *ngFor="let extension of extensions"
+                      [ngValue]="extension"
+                    >
+                      {{ extension }}
+                    </option>
                   </select>
                 </div>
               </div>
-              <!-- error block -->
-              <div class="invalid-feedback" *ngIf="submitted && extension.errors?.required">
+              <div
+                class="invalid-feedback"
+                *ngIf="submitted && extension.errors?.required"
+              >
                 <sup>*</sup>Model extension required
               </div>
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="control">
-              <input
-                formControlName="userName"
-                class="input"
-                type="text"
-                placeholder="GitHub username"
-              />
-            </div>
-          </div>
-          <div class="column is-one-fifth">
-            <div class="control">
-              <input
-                formControlName="passWord"
-                class="input"
-                type="password"
-                placeholder="GitHub password"
-              />
             </div>
           </div>
           <div class="level-right">
             <div class="field is-grouped">
               <div class="control">
                 <button
-                  [disabled]="status == 'running'"
+                  [disabled]="!isSelected || status == 'running' || status == 'offline'"
                   type="submit"
                   class="button is-primary"
                 >
@@ -89,16 +84,20 @@
               </div>
               <div class="control">
                 <button
+                  (click)="stopCrawler()"
+                  [disabled]="status == 'standby' || status == 'offline'"
                   type="button"
-                  (click)="updateStatus()"
-                  class="button is-info"
+                  class="button is-danger"
                 >
-                  Status
+                  Stop Crawler
                 </button>
               </div>
-
               <div class="control">
-                <button type="button" routerLink=".." class="button is-link is-light">
+                <button
+                  type="button"
+                  routerLink=".."
+                  class="button is-link is-light"
+                >
                   Cancel
                 </button>
               </div>
@@ -109,3 +108,5 @@
     </div>
   </div>
 </form>
+
+<app-login-modal *ngIf="showLoginModal" (onClose)="startCrawlerWithUser($event)"></app-login-modal>

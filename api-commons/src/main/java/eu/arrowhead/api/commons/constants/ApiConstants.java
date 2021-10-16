@@ -7,8 +7,13 @@ public class ApiConstants {
     public static final String UPDATE_MODEL_SERVICE = "update-model";
     public static final String MODELS_URI = "/models";
     public static final String UPLOAD_URI = "/upload";
+    public static final String REQUEST_PARAM_KEY_MODEL_VERSION = "request-param-model-version";
+    public static final String REQUEST_PARAM_MODEL_VERSION = "version";
 
-    public static final String DOMAINS_SERVICE = "domains";
+    public static final String GET_DOMAINS_SERVICE = "get-domains";
+    public static final String CREATE_DOMAIN_SERVICE = "create-domain";
+    public static final String DELETE_DOMAIN_SERVICE = "delete-domain";
+    public static final String UPDATE_DOMAIN_SERVICE = "update-domain";
     public static final String DOMAINS_URI = "/domains";
 
     public static final String MODEL_TRANSFORMER_SERVICE = "model-transformer";
@@ -25,16 +30,16 @@ public class ApiConstants {
     public static final String BY_ID_PATH = "/{id}";
     public static final String PATH_VARIABLE_ID = "id";
 
-    public static final String REQUEST_PARAM_KEY_MODELS_PAGE = "request-param-model-page";
-    public static final String REQUEST_PARAM_MODELS_PAGE = "p";
-    public static final String REQUEST_PARAM_KEY_MODELS_QUERY = "request-param-model-query";
-    public static final String REQUEST_PARAM_MODELS_QUERY = "q";
-    public static final String REQUEST_PARAM_KEY_MODEL_NAME = "request-param-model-name";
-    public static final String REQUEST_PARAM_MODEL_NAME = "name";
-    public static final String REQUEST_PARAM_KEY_MODEL_FORMAT = "request-param-model-format";
-    public static final String REQUEST_PARAM_MODEL_FORMAT = "format";
-    public static final String REQUEST_PARAM_KEY_MODEL_VERSION = "request-param-model-version";
-    public static final String REQUEST_PARAM_MODEL_VERSION = "version";
+    public static final String REQUEST_PARAM_KEY_OFFSET = "request-param-offset";
+    public static final String REQUEST_PARAM_OFFSET = "offset";
+    public static final String REQUEST_PARAM_KEY_LIMIT = "request-param-limit";
+    public static final String REQUEST_PARAM_LIMIT = "limit";
+    public static final String REQUEST_PARAM_KEY_QUERY = "request-param-query";
+    public static final String REQUEST_PARAM_QUERY = "q";
+    public static final String REQUEST_PARAM_KEY_NAME = "request-param-name";
+    public static final String REQUEST_PARAM_NAME = "name";
+    public static final String REQUEST_PARAM_KEY_FORMAT = "request-param-format";
+    public static final String REQUEST_PARAM_FORMAT = "format";
 
     public static final String INTERFACE_SECURE = "HTTP-SECURE-JSON";
     public static final String INTERFACE_INSECURE = "HTTP-INSECURE-JSON";

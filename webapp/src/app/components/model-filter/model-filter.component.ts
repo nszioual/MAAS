@@ -11,6 +11,7 @@ import { saveAs } from 'file-saver';
 export class ModelFilterComponent implements OnInit {
   submitted = false;
   filtered = false;
+  showTransformationModal = false;
   searchForm: FormGroup;
 
   predicates: any = ['>', '<', '=', '!'];
@@ -97,8 +98,13 @@ export class ModelFilterComponent implements OnInit {
 
   }
 
-  download(): void {
-    this.filterService.download(this.searchForm.value.target).subscribe(
+  download(): any {
+      this.showTransformationModal = true;
+  }
+
+  downloadToTarget(transformation): void {
+    this.showTransformationModal = false;
+    this.filterService.download(transformation.target).subscribe(
       (data) => {
         console.log(data);
         saveAs(data, `bundle.zip`);

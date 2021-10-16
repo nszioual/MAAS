@@ -3,11 +3,9 @@ package eu.arrowhead.model.storage.service;
 import eu.arrowhead.model.storage.Utils;
 import eu.arrowhead.model.storage.exception.DuplicateModelException;
 import eu.arrowhead.model.storage.exception.ModelNotFoundException;
-import eu.arrowhead.model.storage.metadata.RepositoryMetadata;
 import eu.arrowhead.model.storage.model.Domain;
 import eu.arrowhead.model.storage.model.Model;
 import eu.arrowhead.model.storage.repository.ModelRepository;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +49,6 @@ public class ModelService {
         return modelRepository.findByName(name);
     }
 
-    public List<Model> findByFileName(final String modelName) {
-        return modelRepository.findByFileName(modelName);
-    }
-
     public List<Model> findAll() {
         List<Model> models = new ArrayList<>();
         modelRepository.findAll().forEach(models::add);
@@ -87,20 +81,6 @@ public class ModelService {
         modelRepository.delete(model);
     }
 
-    public void deleteAll() {
-        modelRepository.deleteAll();
-    }
-
-    public Model update(Model newModel) {
-        Model oldModel = modelRepository.findById(newModel.getId()).orElseThrow(() -> new ModelNotFoundException(newModel.getId()));
-        return updateModel(oldModel, newModel);
-    }
-
-    public Model update(Model newModel, String id) {
-        Model oldModel = modelRepository.findById(id).orElseThrow(() -> new ModelNotFoundException(id));
-        return updateModel(oldModel, newModel);
-    }
-
     public Model update(Model newModel, String id, MultipartFile file) {
         Model oldModel = modelRepository.findById(id).orElseThrow(() -> new ModelNotFoundException(id));
         oldModel.setPath(newModel.getPath());
@@ -114,16 +94,6 @@ public class ModelService {
             oldModel.setModel(newModel.getModel());
         }
 
-        return modelRepository.save(oldModel);
-    }
-
-    private Model updateModel(Model oldModel, Model newModel) {
-        oldModel.setFileName(newModel.getFileName());
-        oldModel.setModelingLanguage(newModel.getModelingLanguage());
-        oldModel.setRepository(newModel.getRepository());
-        oldModel.setPath(newModel.getPath());
-        oldModel.setModel(newModel.getModel());
-        oldModel.setCModel(newModel.getCModel());
         return modelRepository.save(oldModel);
     }
 

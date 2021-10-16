@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModelService } from 'src/app/services/model.service';
 import { FormControl } from '@angular/forms';
 import { saveAs } from 'file-saver';
-import { faDownload, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEdit, faPlus, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-models-list',
@@ -13,11 +13,13 @@ export class ModelsListComponent implements OnInit {
   faDownload = faDownload;
   faEdit = faEdit;
   faPlus = faPlus;
+  faLayerGroup = faLayerGroup;
 
   models: any;
   totalElements: number;
   totalPages: number;
-  currentPage = 0;
+  offset = 0;
+  limit = 8;
   isSearching: boolean;
   name = new FormControl('');
 
@@ -29,7 +31,7 @@ export class ModelsListComponent implements OnInit {
   }
 
   retrieveModels(): void {
-    this.modelService.getAllPageable(this.currentPage).subscribe(
+    this.modelService.getAllPageAble(this.offset, this.limit).subscribe(
       (data) => {
         this.models = data.models;
         this.totalElements = data.totalElements;
@@ -45,13 +47,13 @@ export class ModelsListComponent implements OnInit {
   onKeydown($event: KeyboardEvent): void {
     if ($event.key === 'Enter') {
       this.isSearching = this.name.value.length !== 0;
-      this.currentPage = 1;
+      this.offset = 1;
       this.searchName();
     }
   }
 
   searchName(): void {
-    this.modelService.findByNamePageable(this.name.value, this.currentPage).subscribe(
+    this.modelService.findByNamePageAble(this.name.value, this.offset, this.limit).subscribe(
       (data) => {
         this.models = data.models;
         this.totalElements = data.totalElements;
@@ -65,8 +67,8 @@ export class ModelsListComponent implements OnInit {
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage += 1;
+    if (this.offset < this.totalPages) {
+      this.offset += 1;
       if (!this.isSearching) {
         this.retrieveModels();
       } else {
@@ -76,8 +78,8 @@ export class ModelsListComponent implements OnInit {
   }
 
   previousPage(): void {
-    if (this.currentPage > 0) {
-      this.currentPage -= 1;
+    if (this.offset > 0) {
+      this.offset -= 1;
       if (!this.isSearching) {
         this.retrieveModels();
       } else {
@@ -97,5 +99,4 @@ export class ModelsListComponent implements OnInit {
       }
     );
   }
-
 }

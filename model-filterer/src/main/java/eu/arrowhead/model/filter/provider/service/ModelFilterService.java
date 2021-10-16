@@ -13,9 +13,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Model filter service.
+ */
 @Service
 public class ModelFilterService {
 
+    /**
+     * Gets search criteria.
+     *
+     * @param searchFormDTO the search form dto
+     * @return the search criteria
+     */
     public List<SearchCriteria> getSearchCriteria(SearchFormDTO searchFormDTO) {
         List<SearchCriteria> params = new ArrayList<>();
 
@@ -38,6 +47,15 @@ public class ModelFilterService {
         return params;
     }
 
+    /**
+     * Gets search criteria.
+     *
+     * @param name   the name
+     * @param format the format
+     * @param elems  the elems
+     * @param repo   the repo
+     * @return the search criteria
+     */
     public List<SearchCriteria> getSearchCriteria(String name, String format, String elems, String repo) {
         List<SearchCriteria> params = new ArrayList<>();
 

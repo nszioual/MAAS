@@ -1,6 +1,6 @@
 package eu.arrowhead.crawler.provider.crawler;
 
-import eu.arrowhead.crawler.provider.commons.Constants;
+import eu.arrowhead.crawler.provider.commons.CrawlerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class Crawler {
             try {
                 Thread.sleep(1000);
                 long idleNano = System.nanoTime() - executorService.getLastExecutionTimeNano();
-                if (executorService.getQueue().size() == 0 && idleNano >= Constants.MAX_IDLE_NANO) {
+                if (executorService.getQueue().size() == 0 && idleNano >= CrawlerConstants.MAX_IDLE_NANO) {
                     if (stopExecutorService(10)) break;
                 }
             } catch (InterruptedException e) {

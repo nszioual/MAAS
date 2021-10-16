@@ -8,13 +8,24 @@
 
 <h1 class="title is-2">Models List</h1>
 
-<div class="field has-addons">
-  <button class="button is-primary" routerLink="/models/add" type="button">
-    <span class="icon is-small">
-      <fa-icon [icon]="faPlus"></fa-icon>
-    </span>
-    <span>Add Model</span>
-  </button>
+<div class="field is-grouped">
+  <div class="control">
+    <button class="button is-primary" routerLink="/models/add" type="button">
+      <span class="icon is-small">
+        <fa-icon [icon]="faPlus"></fa-icon>
+      </span>
+      <span>Add Model</span>
+    </button>
+  </div>
+
+  <div class="control">
+    <button class="button is-primary" routerLink="/upload" type="button">
+      <span class="icon is-small">
+        <fa-icon [icon]="faLayerGroup"></fa-icon>
+      </span>
+      <span>Add Models</span>
+    </button>
+  </div>
 </div>
 
 <div class="field has-addons">
@@ -83,21 +94,32 @@
 </div>
 
 <div class="field has-addons is-pulled-right">
-  <button class="button" (click)="previousPage()" type="button" [disabled]="currentPage == 0">
+  <button
+    class="button"
+    (click)="previousPage()"
+    type="button"
+    [disabled]="offset == 0"
+  >
     <span>Previous</span>
   </button>
 
-  <button class="button" (click)="nextPage()" type="button"
-          [disabled]="currentPage == totalPages - 1|| totalElements <= 8">
+  <button
+    class="button"
+    (click)="nextPage()"
+    type="button"
+    [disabled]="offset == totalPages - 1 || totalElements <= 8"
+  >
     <span>Next page</span>
   </button>
 </div>
 
 <ul>
   <li>
-    <h2 class="subtitle is-6">Page: {{currentPage + 1}} of {{totalPages}}</h2>
+    <h2 class="subtitle is-6">
+      Page: {{ offset + 1 }} of {{ totalPages }}
+    </h2>
   </li>
   <li>
-    <h2 class="subtitle is-6">Total results: {{totalElements}}</h2>
+    <h2 class="subtitle is-6">Total results: {{ totalElements }}</h2>
   </li>
 </ul>

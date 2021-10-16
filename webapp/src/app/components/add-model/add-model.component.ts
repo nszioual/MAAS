@@ -3,6 +3,7 @@ import { ModelService } from 'src/app/services/model.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { AppConstants } from 'src/app/commons/app-constants';
 
 @Component({
   selector: 'app-add-model',
@@ -25,23 +26,14 @@ export class AddModelComponent implements OnInit {
 
   ngOnInit(): void {
     this.modelForm = this.fb.group({
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(2),
-          Validators.maxLength(30),
-          Validators.pattern('^[_A-z0-9]*((-|s)*[_A-z0-9])*$'),
-        ],
-      ],
-      type: ['', [Validators.required]],
+      name: ['', [Validators.required]],
+      description: ['', [Validators.maxLength(350)]],
       path: ['', [Validators.required]],
-      description: [
-        '',
-        [
-          Validators.maxLength(350)
-        ],
-      ],
+      type: ['', [Validators.required]],
+      repoUrl: [''],
+      stars: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      forks: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      branches: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
     });
   }
 
@@ -53,31 +45,34 @@ export class AddModelComponent implements OnInit {
     });
   }
 
-  get modelFormControl() {
-    return this.modelForm.controls;
-  }
-
   saveModel(): void {
     this.submitted = true;
-    if (this.modelForm.valid) {
-      const formData: any = new FormData();
-      formData.append('file', this.selectedFile, this.selectedFile.name);
-      formData.append(
-        'model',
-        new Blob([JSON.stringify(this.modelForm.value)], {
-          type: 'application/json',
-        })
-      );
 
-      this.modelService.create(formData).subscribe(
-        (response) => {
-          console.log(response);
-          this.router.navigate(['/models']);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+    if (!this.modelForm.valid) {
+      return;
     }
+
+    const modelData: any = new FormData();
+    modelData.append('file', this.selectedFile, this.selectedFile.name);
+    modelData.append(
+      'model',
+      new Blob([JSON.stringify(this.modelForm.value)], {
+        type: 'application/json',
+      })
+    );
+
+    this.modelService.create(modelData).subscribe(
+      (response) => {
+        console.log(response);
+        this.router.navigate(['/models']);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  get modelFormControl() {
+    return this.modelForm.controls;
   }
 }

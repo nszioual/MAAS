@@ -53,11 +53,6 @@
                       type="number"
                       placeholder="amount"
                     />
-                    <!-- <div class="red" *ngIf="edgeCount.predicate.value.touched">
-                      <div *ngIf="value.errors?.pattern">
-                        value is invalid!
-                      </div>
-                    </div> -->
                   </div>
                 </div>
               </div>
@@ -435,18 +430,8 @@
           <div class="column is-one-fifths level-left">
             <article>
               <p class="title">{{totalElements}}</p>
-              <p class="subtitle">Models found</p>
+              <p class="subtitle">Models match criteria</p>
             </article>
-            <div class="field form-group">
-              <div class="control">
-                <div class="select is-normal">
-                  <select formControlName="target">
-                    <option value="">Target format</option>
-                    <option *ngFor="let format of formats" [ngValue]="format">{{format}}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="level-right">
@@ -472,3 +457,5 @@
     </div>
   </div>
 </form>
+
+<app-transformation-modal *ngIf="showTransformationModal" (onClose)="downloadToTarget($event)"></app-transformation-modal>

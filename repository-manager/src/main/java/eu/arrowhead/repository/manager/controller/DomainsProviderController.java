@@ -1,19 +1,26 @@
 package eu.arrowhead.repository.manager.controller;
 
 import eu.arrowhead.api.commons.constants.ApiConstants;
+import eu.arrowhead.api.commons.util.TagUtil;
 import eu.arrowhead.model.storage.model.Domain;
 import eu.arrowhead.model.storage.service.DomainService;
+import eu.arrowhead.repository.manager.exception.InvalidDomainException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Optional;
 
 /**
- * The domain controller.
+ * The Domains provider controller.
  */
 @RestController
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -27,23 +34,46 @@ public class DomainsProviderController {
         this.domainService = domainService;
     }
 
-    @PostMapping(path = "")
-    @ResponseBody public ResponseEntity<?> createDomain(@RequestBody Domain domain) {
+    /**
+     * Create a domain
+     *
+     * @param domainData the domain
+     * @return the created domain
+     */
+    @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> createDomain(
+            @Valid @RequestPart("domain") Domain domainData,
+            @RequestPart("file") MultipartFile file) throws IOException {
+        if (domainData.getTags().isEmpty()) {
+            if (file.isEmpty()) {
+                throw new InvalidDomainException();
+            } else {
+                domainData.setTags(TagUtil.readTags(new String(file.getBytes(), StandardCharsets.UTF_8)));
+            }
+        }
         return ResponseEntity.ok(new HashMap<String, Object>() {{
-            put("domain", domainService.create(domain));
+            put("domain", domainService.create(domainData));
         }});
     }
 
     /**
-     * Gets models.
+     * Gets domains
      *
      * @param name the name
-     * @return the models
+     * @param offset the offset
+     * @param limit the limit
+     * @return the domains
      */
     @GetMapping(value = "")
-    @ResponseBody public ResponseEntity<?> getDomains(@RequestParam(value = ApiConstants.REQUEST_PARAM_MODEL_NAME, required = false) Optional<String> name,
-                                                      @RequestParam(value = ApiConstants.REQUEST_PARAM_MODELS_PAGE, required = false) Optional<Integer> page) {
-        Page<Domain> domains = name.isEmpty() ? domainService.findAll(PageRequest.of(page.orElse(0), 8)) : domainService.findByNameContaining(name.get(), PageRequest.of(page.orElse(0), 8));
+    @ResponseBody
+    public ResponseEntity<?> getDomains(
+            @RequestParam(value = ApiConstants.REQUEST_PARAM_NAME, required = false) Optional<String> name,
+            @RequestParam(value = ApiConstants.REQUEST_PARAM_OFFSET, required = false, defaultValue = "0") int offset,
+            @RequestParam(value = ApiConstants.REQUEST_PARAM_LIMIT, required = false, defaultValue = "8") int limit) {
+        Page<Domain> domains = name.isEmpty()
+                ? domainService.findAll(PageRequest.of(offset, limit))
+                : domainService.findByNameContaining(name.get(), PageRequest.of(offset, limit));
         return ResponseEntity.ok(new HashMap<String, Object>() {{
             put("domains", domains.getContent());
             put("totalElements", domains.getTotalElements());

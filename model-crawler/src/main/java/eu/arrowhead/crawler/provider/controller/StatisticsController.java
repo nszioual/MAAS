@@ -1,34 +1,39 @@
 package eu.arrowhead.crawler.provider.controller;
 
+import eu.arrowhead.crawler.provider.commons.CrawlerStatistics;
 import eu.arrowhead.crawler.provider.service.ModelCrawlService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+/**
+ * The Statistics controller.
+ */
 @Controller
 public class StatisticsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
-
     private final ModelCrawlService modelCrawlService;
 
-    private final SimpMessagingTemplate template;
-
+    /**
+     * Instantiates a new Statistics controller.
+     *
+     * @param modelCrawlService the model crawl service
+     */
     @Autowired
-    public StatisticsController(ModelCrawlService modelCrawlService, SimpMessagingTemplate template) {
+    public StatisticsController(ModelCrawlService modelCrawlService) {
         this.modelCrawlService = modelCrawlService;
-        this.template = template;
     }
 
-    public void stats() {
-        logger.info("The time is now {}", new SimpleDateFormat().format(new Date()));
-        template.convertAndSend("message/stats", this.modelCrawlService.getCrawlerStatistics());
+    /**
+     * Gets crawler statistics.
+     *
+     * @param message the message
+     * @return the crawler statistics
+     */
+    @MessageMapping("/stats")
+    @SendTo("/topic/messages")
+    public CrawlerStatistics stats(String message) {
+        return modelCrawlService.getCrawlerStatistics();
     }
 }
